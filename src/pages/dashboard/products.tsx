@@ -1,82 +1,46 @@
-import sumBy from 'lodash/sumBy';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// @mui
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
-  Tab,
-  Tabs,
   Card,
   Table,
-  Stack,
-  Switch,
   Button,
-  Tooltip,
   Divider,
   TableBody,
   Container,
-  IconButton,
   TableContainer,
   TablePagination,
-  FormControlLabel,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
-// hooks
-import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
-import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
-// _mock_
-import { _invoices } from '../../_mock';
-// @types
-import { Invoice } from '../../@types/invoice';
+import useTable, { emptyRows } from '../../hooks/useTable';
 // components
 import Page from '../../components/Page';
-import Label from '../../components/Label';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import {
-  TableNoData,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableSelectedActions,
-} from '../../components/table';
-// sections
-import InvoiceAnalytic from '../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/invoice/list';
+import { TableEmptyRows, TableHeadCustom } from '../../components/table';
 import { useDispatch, useSelector } from 'src/redux/store';
-import { deleteCategory, getCategories } from 'src/redux/slices/categories';
-import CategoryTableRow from 'src/sections/@dashboard/categories/list/CategoryTableRow';
-import { Categories } from 'src/@types/categories';
-import { getProducts } from 'src/redux/slices/products';
+import { deleteProduct, getProducts } from 'src/redux/slices/products';
 import ProductsTableRow from 'src/sections/@dashboard/products/list/ProductsTableRow';
-import { Product } from 'src/@types/product';
 import { Prodcuct } from 'src/@types/products';
 
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
+
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product Name', align: 'left' },
-  { id: 'price', label: 'Price', align: 'left' },
-  { id: 'subCategoryName', label: 'SubCategory Name', align: 'left' },
+  { id: 'name', label: 'اسم المنتج', align: 'left' },
+  { id: 'price', label: 'السعر', align: 'left' },
+  { id: 'discount', label: 'نسبة الخصم', align: 'left' },
+  { id: 'subCategoryName', label: 'الفئة الفرعية', align: 'left' },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function ProuductsList() {
-  const theme = useTheme();
 
   const { themeStretch } = useSettings();
 
@@ -92,40 +56,17 @@ export default function ProuductsList() {
     order,
     orderBy,
     rowsPerPage,
-    setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
-    onSelectAllRows,
-    //
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [filterName, setFilterName] = useState('');
-
-  const [filterService, setFilterService] = useState('all');
-
-  const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
-
-  const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
-
-  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
-
-  const handleFilterName = (filterName: string) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-
-  const handleFilterService = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterService(event.target.value);
-  };
 
   const handleDeleteRow = async (id: string) => {
-    await dispatch(deleteCategory(id));
+    await dispatch(deleteProduct(id));
     setSelected([]);
   };
 
@@ -133,24 +74,18 @@ export default function ProuductsList() {
     navigate(PATH_DASHBOARD.categories.subCategories(id));
   };
 
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = products.filter((row) => !selected.includes(String(row.productId)));
-    setSelected([]);
-  };
+ 
 
   const handleEditRow = (id: string) => {
-    navigate(PATH_DASHBOARD.categories.edit(id));
+    
+    navigate(PATH_DASHBOARD.products.edit(id));
   };
 
   const handleViewRow = (id: string) => {
     navigate(PATH_DASHBOARD.products.view(id));
   };
 
-  const dataFiltered = applySortFilter({
-    products,
-    comparator: getComparator(order, orderBy),
-    filterName,
-  });
+
 
   const denseHeight = dense ? 56 : 76;
 
@@ -159,13 +94,13 @@ export default function ProuductsList() {
   }, []);
 
   return (
-    <Page title="Products: List">
+    <Page title="جدول المنتجات">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Products List"
+          heading="جدول المنتجات"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Products', href: PATH_DASHBOARD.products.root },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'المنتجات', href: PATH_DASHBOARD.products.root },
           ]}
           action={
             <Button
@@ -174,72 +109,16 @@ export default function ProuductsList() {
               to={PATH_DASHBOARD.products.add}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Product
+             اضافه منتج جديد
             </Button>
           }
         />
 
         <Card>
           <Divider />
-
-          {/* <InvoiceTableToolbar
-              filterName={filterName}
-              filterService={filterService}
-              filterStartDate={filterStartDate}
-              filterEndDate={filterEndDate}
-              onFilterName={handleFilterName}
-              onFilterService={handleFilterService}
-              onFilterStartDate={(newValue) => {
-                setFilterStartDate(newValue);
-              }}
-              onFilterEndDate={(newValue) => {
-                setFilterEndDate(newValue);
-              }}
-              optionsService={SERVICE_OPTIONS}
-            /> */}
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={products.length}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      products.map((row) => String(row.productId))
-                    )
-                  }
-                  actions={
-                    <Stack spacing={1} direction="row">
-                      <Tooltip title="Sent">
-                        <IconButton color="primary">
-                          <Iconify icon={'ic:round-send'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Download">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:download-outline'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Print">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:printer-fill'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Delete">
-                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                          <Iconify icon={'eva:trash-2-outline'} />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  }
-                />
-              )}
+        
 
               <Table size={dense ? 'small' : 'medium'}>
                 <TableHeadCustom
@@ -247,14 +126,8 @@ export default function ProuductsList() {
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
                   rowCount={products.length}
-                  numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      products.map((row) => String(row.productId))
-                    )
-                  }
+                 
                 />
 
                 <TableBody>
@@ -291,12 +164,8 @@ export default function ProuductsList() {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+              labelDisplayedRows={(info) => ` ${info.from + '/' + info.to + ' من ' + info.count}`}
+              labelRowsPerPage="صفوف في الصفحة:"
             />
           </Box>
         </Card>

@@ -1,12 +1,9 @@
-import sumBy from 'lodash/sumBy';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
-  Tab,
-  Tabs,
   Card,
   Table,
   Stack,
@@ -27,25 +24,12 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
-// _mock_
-import { _invoices } from '../../_mock';
-// @types
-import { Invoice } from '../../@types/invoice';
 // components
 import Page from '../../components/Page';
-import Label from '../../components/Label';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import {
-  TableNoData,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableSelectedActions,
-} from '../../components/table';
-// sections
-import InvoiceAnalytic from '../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/invoice/list';
+import { TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../components/table';
 import { useDispatch, useSelector } from 'src/redux/store';
 import { deleteCategory, getCategories } from 'src/redux/slices/categories';
 import CategoryTableRow from 'src/sections/@dashboard/categories/list/CategoryTableRow';
@@ -53,18 +37,9 @@ import { Categories } from 'src/@types/categories';
 
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
-
 const TABLE_HEAD = [
-  { id: 'id', label: 'Category Id', align: 'left' },
-  { id: 'categoryName', label: 'Category Name', align: 'left' },
+  { id: 'categoryName', label: 'اسم الفئة', align: 'left' },
+  { id: 'id', label: 'رقم التسلسل', align: 'left' },
   { id: '' },
 ];
 
@@ -104,20 +79,6 @@ export default function CategoriesList() {
 
   const [filterService, setFilterService] = useState('all');
 
-  const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
-
-  const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
-
-  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
-
-  const handleFilterName = (filterName: string) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-
-  const handleFilterService = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterService(event.target.value);
-  };
 
   const handleDeleteRow = async (id: string) => {
     await dispatch(deleteCategory(id));
@@ -154,13 +115,13 @@ export default function CategoriesList() {
   }, []);
 
   return (
-    <Page title="Categories: List">
+    <Page title="جدول الفئات">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Categories List"
+          heading="جدول الفئات"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Categories', href: PATH_DASHBOARD.categories.root },
+            { name: 'الرئيسيه', href: PATH_DASHBOARD.root },
+            { name: 'الفئات', href: PATH_DASHBOARD.categories.root },
           ]}
           action={
             <Button
@@ -169,7 +130,7 @@ export default function CategoriesList() {
               to={PATH_DASHBOARD.categories.add}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Category
+              اضافه تصنيف
             </Button>
           }
         />
@@ -177,64 +138,9 @@ export default function CategoriesList() {
         <Card>
           <Divider />
 
-          {/* <InvoiceTableToolbar
-              filterName={filterName}
-              filterService={filterService}
-              filterStartDate={filterStartDate}
-              filterEndDate={filterEndDate}
-              onFilterName={handleFilterName}
-              onFilterService={handleFilterService}
-              onFilterStartDate={(newValue) => {
-                setFilterStartDate(newValue);
-              }}
-              onFilterEndDate={(newValue) => {
-                setFilterEndDate(newValue);
-              }}
-              optionsService={SERVICE_OPTIONS}
-            /> */}
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={categories.length}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      categories.map((row) => String(row.id))
-                    )
-                  }
-                  actions={
-                    <Stack spacing={1} direction="row">
-                      <Tooltip title="Sent">
-                        <IconButton color="primary">
-                          <Iconify icon={'ic:round-send'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Download">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:download-outline'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Print">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:printer-fill'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Delete">
-                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                          <Iconify icon={'eva:trash-2-outline'} />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  }
-                />
-              )}
+            
 
               <Table size={dense ? 'small' : 'medium'}>
                 <TableHeadCustom
@@ -283,15 +189,13 @@ export default function CategoriesList() {
               component="div"
               count={categories.length}
               rowsPerPage={rowsPerPage}
+              labelDisplayedRows={(info) =>
+                ` ${info.from + '/' + info.to + ' من ' + info.count}`
+              }
+              labelRowsPerPage="صفوف في الصفحة:"
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
         </Card>

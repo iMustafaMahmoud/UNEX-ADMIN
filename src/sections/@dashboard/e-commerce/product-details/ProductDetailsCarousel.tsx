@@ -8,7 +8,6 @@ import { Product } from '../../../../@types/product';
 //
 import Image from '../../../../components/Image';
 import LightboxModal from '../../../../components/LightboxModal';
-import { CarouselArrowIndex } from '../../../../components/carousel';
 
 // ----------------------------------------------------------------------
 
@@ -106,12 +105,7 @@ export default function ProductDetailsCarousel({ product }: Props) {
               />
             ))}
           </Slider>
-          <CarouselArrowIndex
-            index={currentIndex}
-            total={product.images.length}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
+          
         </Box>
       </Box>
 

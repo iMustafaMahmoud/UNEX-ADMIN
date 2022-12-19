@@ -45,9 +45,9 @@ import AddSizeDialog from 'src/sections/@dashboard/products/dialogs/add-size-dia
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'color', label: 'Color', align: 'left' },
-  { id: 'sizes', label: 'Sizes', align: 'left' },
-  //   { id: 'price', label: 'Price', align: 'left' },
+  { id: 'color', label: 'اللون', align: 'left' },
+  { id: 'sizes', label: 'المقاس', align: 'left' },
+    { id: 'count', label: 'العدد', align: 'left' },
   //   { id: 'subCategoryName', label: 'SubCategory Name', align: 'left' },
   { id: '' },
 ];
@@ -174,7 +174,7 @@ export default function ProuductsView() {
               onClick={() => setOpenAddColorDialog(true)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New Color
+              اضف لون جديد
             </Button>
           }
         />
@@ -184,20 +184,20 @@ export default function ProuductsView() {
             <img src={product.images[0]} />
             <Box width="50%" color="red" textAlign="center">
               <Typography variant="h2" color="black" mb={4}>
-                {product.enName}
+                {product.arName}
               </Typography>
               <Box>
                 <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
-                  ajbdfaskjdhaksjhdaskjdhakjsfhajksfhajsfbaj,bfajbfsmafsbamjbsfambsfmahbfmahbfmhabfmhafbamhfbashmbfmahsfbamhfsbmahbfmahsbfmahbfsamhsbfamhbsfmahsbfmafbmahsfbfasmh
+                  {product.description}
                 </Typography>
               </Box>
 
               <Typography variant="h5" color="green" mt={4} mb={4}>
-                EGP {product.price}
+                جم {product.price}
               </Typography>
 
               <Typography variant="h5" color="red" mt={4} mb={4}>
-                Discount {product.discount}%
+                الخصم: {product.discount}%
               </Typography>
             </Box>
           </Box>
@@ -206,67 +206,10 @@ export default function ProuductsView() {
         <Card>
           <Divider />
 
-          {/* <InvoiceTableToolbar
-              filterName={filterName}
-              filterService={filterService}
-              filterStartDate={filterStartDate}
-              filterEndDate={filterEndDate}
-              onFilterName={handleFilterName}
-              onFilterService={handleFilterService}
-              onFilterStartDate={(newValue) => {
-                setFilterStartDate(newValue);
-              }}
-              onFilterEndDate={(newValue) => {
-                setFilterEndDate(newValue);
-              }}
-              optionsService={SERVICE_OPTIONS}
-            /> */}
-
           {product && product.info && (
             <>
               <Scrollbar>
                 <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                  {selected.length > 0 && (
-                    <TableSelectedActions
-                      dense={dense}
-                      numSelected={selected.length}
-                      rowCount={product.info.length}
-                      onSelectAllRows={(checked) =>
-                        onSelectAllRows(
-                          checked,
-                          product.info.map((row) => String(row.id))
-                        )
-                      }
-                      actions={
-                        <Stack spacing={1} direction="row">
-                          <Tooltip title="Sent">
-                            <IconButton color="primary">
-                              <Iconify icon={'ic:round-send'} />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="Download">
-                            <IconButton color="primary">
-                              <Iconify icon={'eva:download-outline'} />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="Print">
-                            <IconButton color="primary">
-                              <Iconify icon={'eva:printer-fill'} />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="Delete">
-                            <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                              <Iconify icon={'eva:trash-2-outline'} />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      }
-                    />
-                  )}
-
                   <Table size={dense ? 'small' : 'medium'}>
                     <TableHeadCustom
                       order={order}
@@ -286,22 +229,25 @@ export default function ProuductsView() {
                     <TableBody>
                       {product?.info
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => (
-                          <InfoTableRow
-                            key={row.id}
-                            row={row}
-                            selected={selected.includes(String(row.id))}
-                            onSelectRow={() => onSelectRow(String(row.id))}
-                            onViewRow={() => handleViewRow(String(row.id))}
-                            onEditRow={() => handleEditRow(String(row.id))}
-                            onDeleteRow={() => handleDeleteRow(String(row.id))}
-                            onViewSubCategory={() => handleViewSubCategories(String(row.id))}
-                            onAddSize={() => {
-                              setProductInfoId(String(row.id));
-                              setOpenAddSizeDialog(true);
-                            }}
-                          />
-                        ))}
+                        .map((row) =>
+                          row.countBySize.map((item) => (
+                            <InfoTableRow
+                              key={item.size}
+                              row={row}
+                              infoItem={item}
+                              selected={selected.includes(String(row.id))}
+                              onSelectRow={() => onSelectRow(String(row.id))}
+                              onViewRow={() => handleViewRow(String(row.id))}
+                              onEditRow={() => handleEditRow(String(row.id))}
+                              onDeleteRow={() => handleDeleteRow(String(row.id))}
+                              onViewSubCategory={() => handleViewSubCategories(String(row.id))}
+                              onAddSize={() => {
+                                setProductInfoId(String(row.id));
+                                setOpenAddSizeDialog(true);
+                              }}
+                            />
+                          ))
+                        )}
 
                       <TableEmptyRows
                         height={denseHeight}
@@ -321,12 +267,10 @@ export default function ProuductsView() {
                   page={page}
                   onPageChange={onChangePage}
                   onRowsPerPageChange={onChangeRowsPerPage}
-                />
-
-                <FormControlLabel
-                  control={<Switch checked={dense} onChange={onChangeDense} />}
-                  label="Dense"
-                  sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+                  labelDisplayedRows={(info) =>
+                    ` ${info.from + '/' + info.to + ' من ' + info.count}`
+                  }
+                  labelRowsPerPage="صفوف في الصفحة:"
                 />
               </Box>
             </>
@@ -343,7 +287,7 @@ export default function ProuductsView() {
         open={openAddSizeDialog}
         handleClose={() => setOpenAddSizeDialog(false)}
         productInfoId={productInfoId}
-        // handleAddColor={addColor}
+     
       />
     </Page>
   );

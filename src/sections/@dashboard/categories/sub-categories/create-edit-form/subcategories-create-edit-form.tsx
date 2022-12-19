@@ -102,37 +102,25 @@ export default function SubCategoriesNewEditForm({ isEdit, currentSubCategory }:
       <Card>
         <Box sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
-            English Name:
+            الاسم بالانجليزية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`enName`}
-                  label="English Name"
-                  fullWidth
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`enName`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Arabic Name:
+            الاسم بالعربية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`arName`}
-                  label="Arabic Name"
-                  fullWidth
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`arName`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
@@ -148,7 +136,7 @@ export default function SubCategoriesNewEditForm({ isEdit, currentSubCategory }:
           loading={loadingSend && isSubmitting}
           type="submit"
         >
-          {isEdit ? 'Update' : 'Create'} & Send
+          {isEdit ? 'تحديث' : 'انشاء'} & ارسال
         </LoadingButton>
       </Stack>
     </FormProvider>

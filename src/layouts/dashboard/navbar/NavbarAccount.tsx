@@ -8,6 +8,7 @@ import useAuth from '../../../hooks/useAuth';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import MyAvatar from '../../../components/MyAvatar';
+import Logo from 'src/components/Logo';
 
 // ----------------------------------------------------------------------
 
@@ -16,7 +17,7 @@ const RootStyle = styled('div')(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: theme.palette.grey[500_12],
+  backgroundColor: '#637381',
   transition: theme.transitions.create('opacity', {
     duration: theme.transitions.duration.shorter,
   }),
@@ -36,11 +37,11 @@ export default function NavbarAccount({ isCollapse }: Props) {
       <RootStyle
         sx={{
           ...(isCollapse && {
-            bgcolor: 'transparent',
+            bgcolor: '#637381',
           }),
         }}
       >
-        <MyAvatar />
+        <Logo />
 
         <Box
           sx={{

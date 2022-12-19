@@ -5,7 +5,7 @@ import axios from '../../utils/axios';
 //
 import { dispatch } from '../store';
 import { AddCategoryPayload } from 'src/@types/categories';
-import { AddProductPayload, ProductsState } from 'src/@types/products';
+import { AddProductPayload, EditProductPayload, ProductsState } from 'src/@types/products';
 
 // ----------------------------------------------------------------------
 
@@ -64,10 +64,10 @@ export function createProduct(subcategoryId: string, product: AddProductPayload)
   };
 }
 
-export function editProduct(id: string, category: AddCategoryPayload) {
+export function editProduct(id: string, product: EditProductPayload) {
   return async () => {
     try {
-      await axios.post('/category/update', category, { params: { id } });
+      await axios.post('/product/UpdateProduct', product, { params: { id } });
       dispatch(getProducts());
     } catch (error) {
       console.log({ error });
@@ -78,7 +78,7 @@ export function editProduct(id: string, category: AddCategoryPayload) {
 export function deleteProduct(id: string) {
   return async () => {
     try {
-      await axios.post(`/category/delete`, null, { params: { id } });
+      await axios.post(`/product/delete`, null, { params: { id } });
       dispatch(getProducts());
     } catch (error) {
       console.log({ error });
@@ -89,7 +89,7 @@ export function deleteProduct(id: string) {
 export function getProductById(id: string) {
   return async () => {
     try {
-      const response = await axios.get(`/category/getbyid`, {
+      const response = await axios.get(`/product/getbyid`, {
         params: { id, admin_key: 'd8344117b4b11d7e09a29498a558b57923178c72' },
       });
       dispatch(slice.actions.setCurrentProduct(response.data));

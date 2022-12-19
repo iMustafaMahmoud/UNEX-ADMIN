@@ -35,19 +35,28 @@ export enum Size {
   LG = 'lg',
   XL = 'xl',
   XXL = 'xxl',
+  XXXL = 'xxxl',
+  XXXXL = 'xxxxl',
+  XXXXXL = 'xxxxxl',
 }
 
 export interface AddProductPayload {
   enName: string;
-  ArName: string;
-  ArDescription: string;
-  EnDescription: string;
+  arName: string;
+  arDescription: string;
+  enDescription: string;
   Price: number;
   Discount: number;
   PhotoUrls: string[];
 }
 
 export interface EditProductPayload {
-  arCateogryName: string;
-  enCategoryName: string;
+  enName: string;
+  arName: string;
+  arDescription: string;
+  enDescription: string;
+  price: number;
+  discount: number;
+  images: string[];
+  subCategoryName?: string;
 }

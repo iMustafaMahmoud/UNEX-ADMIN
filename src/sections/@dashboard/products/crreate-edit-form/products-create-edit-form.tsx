@@ -7,34 +7,25 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Stack, Typography } from '@mui/material';
-// routes
-
-import { EditCategoryPayload } from 'src/@types/categories';
 import { useDispatch } from 'src/redux/store';
-import { createCategory, editCategory } from 'src/redux/slices/categories';
 import { PATH_DASHBOARD } from 'src/routes/paths';
-import { createSubCategory, editSubCategory } from 'src/redux/slices/sub-categories';
-import {
-  EditSubCategoryPayload,
-  SubCategories,
-  SubCategoriesForGetAll,
-} from 'src/@types/sub-categories';
+import { SubCategoriesForGetAll } from 'src/@types/sub-categories';
 import { FormProvider, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import axios from 'src/utils/axios';
-import { createProduct } from 'src/redux/slices/products';
+import { createProduct, editProduct } from 'src/redux/slices/products';
+import { EditProductPayload } from 'src/@types/products';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   isEdit?: boolean;
-  currentSubCategory?: EditSubCategoryPayload[];
+  currentProduct?: EditProductPayload;
 };
 
-export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Props) {
+export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) {
   const navigate = useNavigate();
 
   const { id, subCategoryId } = useParams();
-
   const [loadingSend, setLoadingSend] = useState(false);
 
   const dispatch = useDispatch();
@@ -48,24 +39,24 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
     EnDescription: Yup.string().required(),
     ArDescription: Yup.string().required(),
     Price: Yup.number().required(),
-    Discount: Yup.number().required(),
+    Discount: Yup.number().required().max(100, 'maximum 100'),
     PhotoUrls: Yup.array(),
   });
 
   const defaultValues = useMemo(() => {
-    if (currentSubCategory?.length) {
+    if (currentProduct) {
       return {
-        enName: (currentSubCategory[0]?.enSubCategoryName as string) || '',
-        arName: (currentSubCategory[0]?.arSubCateogryName as string) || '',
-        subCategoryId: '',
-        EnDescription: '',
-        ArDescription: '',
-        Price: 0,
-        Discount: 0,
-        PhotoUrls: [],
+        EnName: (currentProduct.enName as string) || '',
+        ArName: (currentProduct.arName as string) || '',
+        subCategoryId: (currentProduct.subCategoryName as string) || '',
+        EnDescription: (currentProduct.enDescription as string) || '',
+        ArDescription: (currentProduct.arDescription as string) || '',
+        Price: currentProduct.price || 0,
+        Discount: currentProduct.discount || 0,
+        PhotoUrls: currentProduct.images || [],
       };
     }
-  }, [currentSubCategory]);
+  }, [currentProduct]);
 
   const methods = useForm<any>({
     resolver: yupResolver(NewUserSchema),
@@ -79,17 +70,18 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
   } = methods;
 
   useEffect(() => {
-    if (isEdit && currentSubCategory) {
+    if (isEdit && currentProduct) {
       reset(defaultValues);
     }
     if (!isEdit) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentSubCategory]);
+  }, [isEdit, currentProduct]);
 
   const onSubmit = async (values: any) => {
-    if (!currentSubCategory) {
+    if (!currentProduct)
+    {
       const { subCategoryId, ...remaining } = values;
       try {
         await dispatch(createProduct(subCategoryId as string, { ...remaining }));
@@ -101,15 +93,12 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
       }
     } else {
       try {
-        await dispatch(
-          editSubCategory(id as string, subCategoryId as string, {
-            arName: values.arName,
-            enName: values.enName,
-          })
-        );
+        const product:EditProductPayload = values
+        delete product?.subCategoryName
+        await dispatch(editProduct(id as string, product));
         reset();
         setLoadingSend(false);
-        navigate(PATH_DASHBOARD.categories.subCategories(id as string));
+        navigate(PATH_DASHBOARD.products.root);
       } catch (error) {
         console.error(error);
       }
@@ -126,7 +115,8 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
   };
 
   useEffect(() => {
-    getSubCategories();
+   
+      getSubCategories();
   }, []);
 
   return (
@@ -134,55 +124,43 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
       <Card>
         <Box sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
-            English Name:
+            الاسم بالانجليزية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`EnName`}
-                  label="English Name"
-                  fullWidth
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`EnName`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Arabic Name:
+            الاسم بالعربية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`ArName`}
-                  label="Arabic Name"
-                  fullWidth
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`ArName`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            SubCategory:
+            الفئة الفرعية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFSelect name="subCategoryId" label="SubCategory" placeholder="SubCategory">
+                <RHFSelect disabled={isEdit} name="subCategoryId" placeholder="SubCategory">
                   {' '}
                   <option value="" />{' '}
                   {subCategories?.map((option) => (
                     <option key={option.id} value={option.id}>
                       {' '}
-                      {option.enName}{' '}
+                      {option.name}{' '}
                     </option>
                   ))}{' '}
                 </RHFSelect>
@@ -191,7 +169,7 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            English Description:
+            الوصف بالانجليزية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
@@ -200,7 +178,6 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
                 <RHFTextField
                   size="medium"
                   name={`EnDescription`}
-                  label="English Description"
                   fullWidth
                   multiline
                   rows={4}
@@ -211,59 +188,37 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Arabic Description:
+            الوصف بالعربية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`ArDescription`}
-                  label="Arabic Descriptions"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`ArDescription`} fullWidth multiline rows={4} />
               </Stack>
             </Stack>
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Price:
+            السعر الاساسي:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`Price`}
-                  label="Price"
-                  fullWidth
-                  //   type="number"
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`Price`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Discount:
+            نسبة الخصم:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`Discount`}
-                  label="Discount"
-                  fullWidth
-                  //   type="number"
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" type={'number'} name={`Discount`} fullWidth />
               </Stack>
             </Stack>
           </Stack>
@@ -279,7 +234,7 @@ export default function ProductssNewEditForm({ isEdit, currentSubCategory }: Pro
           loading={loadingSend && isSubmitting}
           type="submit"
         >
-          {isEdit ? 'Update' : 'Create'} & Send
+          {isEdit ? 'تحديث' : 'انشاء'} & ارسال
         </LoadingButton>
       </Stack>
     </FormProvider>

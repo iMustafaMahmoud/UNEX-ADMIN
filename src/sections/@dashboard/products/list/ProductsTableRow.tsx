@@ -1,19 +1,9 @@
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from '@mui/material';
-// utils
-import { fDate } from '../../../../utils/formatTime';
-import createAvatar from '../../../../utils/createAvatar';
-import { fCurrency } from '../../../../utils/formatNumber';
-// @types
-import { Invoice } from '../../../../@types/invoice';
-// components
-import Label from '../../../../components/Label';
-import Avatar from '../../../../components/Avatar';
+import { TableRow, TableCell, MenuItem } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-import { Categories } from 'src/@types/categories';
 import { Prodcuct } from 'src/@types/products';
 
 // ----------------------------------------------------------------------
@@ -39,7 +29,7 @@ export default function ProductsTableRow({
 }: Props) {
   const theme = useTheme();
 
-  const { name, price, subCategoryName } = row;
+  const { name, price, subCategoryName,discount } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -53,12 +43,11 @@ export default function ProductsTableRow({
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
+  
 
       <TableCell align="left">{name}</TableCell>
       <TableCell align="left">{price}</TableCell>
+      <TableCell align="left">{discount}</TableCell>
       <TableCell align="left">{subCategoryName}</TableCell>
 
       <TableCell align="right">
@@ -74,18 +63,8 @@ export default function ProductsTableRow({
                   handleCloseMenu();
                 }}
               >
-                <Iconify icon={'eva:edit-fill'} />
-                view
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  onDeleteRow();
-                  handleCloseMenu();
-                }}
-                sx={{ color: 'error.main' }}
-              >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
+                <Iconify icon={'eva:eye-fill'} />
+                مشاهدة
               </MenuItem>
 
               <MenuItem
@@ -95,18 +74,20 @@ export default function ProductsTableRow({
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
-                Edit
+                تعديل
               </MenuItem>
-
-              {/* <MenuItem
+              <MenuItem
                 onClick={() => {
-                  onViewSubCategory();
+                  onDeleteRow();
                   handleCloseMenu();
                 }}
+                sx={{ color: 'error.main' }}
               >
-                <Iconify icon={'eva:edit-fill'} />
-                SubCategories
-              </MenuItem> */}
+                <Iconify icon={'eva:trash-2-outline'} />
+                مسح
+              </MenuItem>
+
+           
             </>
           }
         />

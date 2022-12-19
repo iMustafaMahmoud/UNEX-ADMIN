@@ -33,7 +33,7 @@ export default function ThemeProvider({ children }: Props) {
       typography,
       breakpoints,
       shape: { borderRadius: 8 },
-      direction: themeDirection,
+      direction: 'rtl',
       shadows: isLight ? shadows.light : shadows.dark,
       customShadows: isLight ? customShadows.light : customShadows.dark,
     }),

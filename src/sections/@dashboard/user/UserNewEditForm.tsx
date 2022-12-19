@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 // form
@@ -17,7 +17,6 @@ import TextMaxLine from '../../../components/TextMaxLine';
 import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import axiosInstance from 'src/utils/axios';
-import { Package } from 'src/@types/package';
 
 // ----------------------------------------------------------------------
 
@@ -35,7 +34,6 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const [packages, setPackages] = useState<Package[]>([]);
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email().required('Email is required'),
@@ -96,7 +94,6 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
   useEffect(() => {
     (async () => {
       const response = await axiosInstance.get('/packages');
-      setPackages(response.data.data);
     })().catch(console.error);
   }, []);
 
@@ -129,14 +126,7 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
             </RHFSelect>
 
             <RHFTextField name="password" type={'password'} label="Password" />
-            <RHFSelect name="package" label="package" placeholder="package">
-              <option value="" />
-              {packages.map((option) => (
-                <option key={option._id} value={option._id}>
-                  {option.name}
-                </option>
-              ))}
-            </RHFSelect>
+         
           </Box>
 
           <Stack alignItems="flex-end" sx={{ mt: 3 }}>

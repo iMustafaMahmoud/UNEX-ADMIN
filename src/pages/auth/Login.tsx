@@ -37,6 +37,7 @@ const HeaderStyle = styled('header')(({ theme }) => ({
     alignItems: 'flex-start',
     padding: theme.spacing(7, 5, 0, 7),
   },
+ 
 }));
 
 const SectionStyle = styled(Card)(({ theme }) => ({
@@ -46,6 +47,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   margin: theme.spacing(2, 0, 2, 2),
+  background: '#637381',
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
@@ -77,8 +79,8 @@ export default function Login() {
 
         {mdUp && (
           <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 ,color:'white'}}>
+              اهلا, مرحبا بعودتك
             </Typography>
             <Image
               visibleByDefault
@@ -94,20 +96,12 @@ export default function Login() {
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="h4" gutterBottom>
-                  Sign in to Kayfa
+               سجل الدخول لدي يونكس ادمن
                 </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>ادخل الايميل و كلمه السر</Typography>
               </Box>
 
-              <Tooltip title={capitalCase(method)} placement="right">
-                <>
-                  <Image
-                    disabledEffect
-                    src={`https://minimal-assets-api-dev.vercel.app/assets/icons/auth/ic_${method}.png`}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                </>
-              </Tooltip>
+             
             </Stack>
 
             <LoginForm />

@@ -30,7 +30,7 @@ export default function SubCategoryTableRow({
   onDeleteRow,
   onViewSubCategory,
 }: Props) {
-  const { name } = row;
+  const { name ,id} = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -44,11 +44,10 @@ export default function SubCategoryTableRow({
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
+    
 
       <TableCell align="left">{name}</TableCell>
+      <TableCell align="left">{id}</TableCell>
 
       <TableCell align="right">
         <TableMoreMenu
@@ -59,23 +58,22 @@ export default function SubCategoryTableRow({
             <>
               <MenuItem
                 onClick={() => {
+                  onEditRow();
+                  handleCloseMenu();
+                }}
+              >
+                <Iconify icon={'eva:edit-fill'} />
+                تعديل
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
                   onDeleteRow();
                   handleCloseMenu();
                 }}
                 sx={{ color: 'error.main' }}
               >
                 <Iconify icon={'eva:trash-2-outline'} />
-                Delete
-              </MenuItem>
-
-              <MenuItem
-                onClick={() => {
-                  onEditRow();
-                  handleCloseMenu();
-                }}
-              >
-                <Iconify icon={'eva:edit-fill'} />
-                Edit
+                مسح
               </MenuItem>
             </>
           }

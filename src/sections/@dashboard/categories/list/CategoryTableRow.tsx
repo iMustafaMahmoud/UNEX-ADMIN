@@ -1,16 +1,7 @@
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from '@mui/material';
-// utils
-import { fDate } from '../../../../utils/formatTime';
-import createAvatar from '../../../../utils/createAvatar';
-import { fCurrency } from '../../../../utils/formatNumber';
-// @types
-import { Invoice } from '../../../../@types/invoice';
-// components
-import Label from '../../../../components/Label';
-import Avatar from '../../../../components/Avatar';
+import { TableRow, TableCell, MenuItem } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Categories } from 'src/@types/categories';
@@ -52,13 +43,11 @@ export default function CategoryTableRow({
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
-
-      <TableCell align="left">{id}</TableCell>
+    
 
       <TableCell align="left">{name}</TableCell>
+
+      <TableCell align="left">{id}</TableCell>
 
       <TableCell align="right">
         <TableMoreMenu
@@ -69,15 +58,13 @@ export default function CategoryTableRow({
             <>
               <MenuItem
                 onClick={() => {
-                  onDeleteRow();
+                  onViewSubCategory();
                   handleCloseMenu();
                 }}
-                sx={{ color: 'error.main' }}
               >
-                <Iconify icon={'eva:trash-2-outline'} />
-                Delete
+                <Iconify icon={'carbon:category-new-each'} />
+                الفئات الفرعية
               </MenuItem>
-
               <MenuItem
                 onClick={() => {
                   onEditRow();
@@ -85,17 +72,17 @@ export default function CategoryTableRow({
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
-                Edit
+                تعديل
               </MenuItem>
-
               <MenuItem
                 onClick={() => {
-                  onViewSubCategory();
+                  onDeleteRow();
                   handleCloseMenu();
                 }}
+                sx={{ color: 'error.main' }}
               >
-                <Iconify icon={'eva:edit-fill'} />
-                SubCategories
+                <Iconify icon={'eva:trash-2-outline'} />
+                مسح
               </MenuItem>
             </>
           }

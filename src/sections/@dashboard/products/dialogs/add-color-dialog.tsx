@@ -1,8 +1,8 @@
-import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { HexColorPicker } from 'react-colorful';
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
+import { RHFTextField } from 'src/components/hook-form';
 
 export interface AddColorDialogProps {
   open: boolean;
@@ -31,9 +31,10 @@ const AddColorDialog = (props: AddColorDialogProps) => {
         <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
           <HexColorPicker color={color} onChange={setColor} />
         </Box>
+        <RHFTextField value={color} onChange={(e) => setColor(e.target.value)} name={'color'} />
         <Box display="flex" alignItems="center" justifyContent="center">
           <Button variant="contained" onClick={addColor}>
-            Add Color
+            اضافة اللون
           </Button>
         </Box>
       </Box>

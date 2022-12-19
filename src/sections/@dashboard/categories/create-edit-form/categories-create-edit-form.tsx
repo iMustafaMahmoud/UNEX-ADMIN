@@ -96,7 +96,7 @@ export default function CategoriesNewEditForm({ isEdit, currentCategory }: Props
       <Card>
         <Box sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
-            English Name:
+            الاسم بالانجليزية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
@@ -105,7 +105,7 @@ export default function CategoriesNewEditForm({ isEdit, currentCategory }: Props
                 <RHFTextField
                   size="medium"
                   name={`enName`}
-                  label="English Name"
+                 
                   fullWidth
                   // sx={{ maxWidth: { md: 122 } }}
                 />
@@ -114,7 +114,7 @@ export default function CategoriesNewEditForm({ isEdit, currentCategory }: Props
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            Arabic Name:
+            الاسم بالعربية:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
@@ -123,7 +123,7 @@ export default function CategoriesNewEditForm({ isEdit, currentCategory }: Props
                 <RHFTextField
                   size="medium"
                   name={`arName`}
-                  label="Arabic Name"
+                  
                   fullWidth
                   // sx={{ maxWidth: { md: 122 } }}
                 />
@@ -142,7 +142,7 @@ export default function CategoriesNewEditForm({ isEdit, currentCategory }: Props
           loading={loadingSend && isSubmitting}
           type="submit"
         >
-          {isEdit ? 'Update' : 'Create'} & Send
+          {isEdit ? 'تحديث' : 'انشاء'} & ارسال
         </LoadingButton>
       </Stack>
     </FormProvider>

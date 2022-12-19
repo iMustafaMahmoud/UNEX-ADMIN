@@ -18,8 +18,10 @@ export interface EditSubCategoryPayload {
   enSubCategoryName: string;
 }
 
+
 export interface SubCategoriesForGetAll {
   id: number;
   enName: string;
   arName: string;
+  name: string;
 }

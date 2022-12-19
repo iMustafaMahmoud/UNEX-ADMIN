@@ -7,42 +7,39 @@ import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-// sections
-import CategoriesNewEditForm from 'src/sections/@dashboard/categories/create-edit-form/categories-create-edit-form';
+import { useParams } from 'react-router';
+import ProductssNewEditForm from 'src/sections/@dashboard/products/crreate-edit-form/products-create-edit-form';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/redux/store';
-import { getCategoryById } from 'src/redux/slices/categories';
-import { useParams } from 'react-router-dom';
-
+import { getProductById } from 'src/redux/slices/products';
 // ----------------------------------------------------------------------
 
-export default function CategoriesEdit() {
+export default function ProductsEdit() {
   const { themeStretch } = useSettings();
 
   const { id } = useParams();
-
   const dispatch = useDispatch();
 
-  const currentCategory = useSelector((state) => state.categories.currentCategory);
+  const currentProduct = useSelector((state) => state.products.currentProduct);
 
   useEffect(() => {
-    dispatch(getCategoryById(id as string));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      dispatch(getProductById(id as string));
+      console.log('product effect', currentProduct);
+
   }, []);
 
   return (
-    <Page title="Categories: Edit category">
+    <Page title="المنتجات: تعديل منتج جديد">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="تعديل الفئة"
+          heading="تعديل منتج"
           links={[
             { name: 'الرئيسية', href: PATH_DASHBOARD.root },
-            { name: 'الفئات', href: PATH_DASHBOARD.categories.root },
-            { name: 'فئة جديدة' },
+            { name: 'المنتجات', href: PATH_DASHBOARD.products.root },
+            { name: 'تعديل ' },
           ]}
         />
-
-        <CategoriesNewEditForm isEdit currentCategory={currentCategory} />
+        <ProductssNewEditForm currentProduct={currentProduct[0]} isEdit={true} />
       </Container>
     </Page>
   );

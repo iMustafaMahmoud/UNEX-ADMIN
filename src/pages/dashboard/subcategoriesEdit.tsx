@@ -33,14 +33,14 @@ export default function SubCategoriesEdit() {
   }, []);
 
   return (
-    <Page title="SubCategories: Edit SubCategory">
+    <Page title="القئات الفرعية: نعديل الفئة الفرعية">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Edit SubCategory"
+          heading="تعديل الفئة الفرعية"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'SubCategories', href: PATH_DASHBOARD.categories.subCategories(id as string) },
-            { name: 'New Category' },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'الفئات الفرعية', href: PATH_DASHBOARD.categories.subCategories(id as string) },
+            { name: 'تعديل الفئة' },
           ]}
         />
 

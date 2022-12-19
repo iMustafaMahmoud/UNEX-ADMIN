@@ -7,7 +7,7 @@ import useAuth from 'src/hooks/useAuth';
 const axiosInstance = axios.create({
   baseURL: 'http://hagarfreetr-001-site1.atempurl.com/api',
   headers: {
-    'Accept-Language': 'en',
+    'Accept-Language': 'ar',
   },
 });
 

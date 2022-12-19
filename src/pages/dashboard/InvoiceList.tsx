@@ -10,7 +10,6 @@ import {
   Card,
   Table,
   Stack,
-  Switch,
   Button,
   Tooltip,
   Divider,
@@ -19,7 +18,6 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
-  FormControlLabel,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -30,7 +28,7 @@ import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 // _mock_
 import { _invoices } from '../../_mock';
 // @types
-import { Invoice } from '../../@types/invoice';
+// import { Invoice } from '../../@types/invoice';
 // components
 import Page from '../../components/Page';
 import Label from '../../components/Label';
@@ -44,8 +42,6 @@ import {
   TableSelectedActions,
 } from '../../components/table';
 // sections
-import InvoiceAnalytic from '../../sections/@dashboard/invoice/InvoiceAnalytic';
-import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/invoice/list';
 
 // ----------------------------------------------------------------------
 
@@ -200,52 +196,13 @@ export default function InvoiceList() {
 
         <Card sx={{ mb: 5 }}>
           <Scrollbar>
-            <Stack
+            {/* <Stack
               direction="row"
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 2 }}
             >
-              <InvoiceAnalytic
-                title="Total"
-                total={tableData.length}
-                percent={100}
-                price={sumBy(tableData, 'totalPrice')}
-                icon="ic:round-receipt"
-                color={theme.palette.info.main}
-              />
-              <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
-                icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
-              />
-              <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
-                icon="eva:clock-fill"
-                color={theme.palette.warning.main}
-              />
-              <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
-                icon="eva:bell-fill"
-                color={theme.palette.error.main}
-              />
-              <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
-                icon="eva:file-fill"
-                color={theme.palette.text.secondary}
-              />
-            </Stack>
+            
+            </Stack> */}
           </Scrollbar>
         </Card>
 
@@ -271,21 +228,7 @@ export default function InvoiceList() {
 
           <Divider />
 
-          <InvoiceTableToolbar
-            filterName={filterName}
-            filterService={filterService}
-            filterStartDate={filterStartDate}
-            filterEndDate={filterEndDate}
-            onFilterName={handleFilterName}
-            onFilterService={handleFilterService}
-            onFilterStartDate={(newValue) => {
-              setFilterStartDate(newValue);
-            }}
-            onFilterEndDate={(newValue) => {
-              setFilterEndDate(newValue);
-            }}
-            optionsService={SERVICE_OPTIONS}
-          />
+        
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
@@ -347,20 +290,7 @@ export default function InvoiceList() {
                 />
 
                 <TableBody>
-                  {dataFiltered
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <InvoiceTableRow
-                        key={row.id}
-                        row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                      />
-                    ))}
-
+                
                   <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
@@ -383,11 +313,7 @@ export default function InvoiceList() {
               onRowsPerPageChange={onChangeRowsPerPage}
             />
 
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
-            />
+          
           </Box>
         </Card>
       </Container>
@@ -406,7 +332,7 @@ function applySortFilter({
   filterStartDate,
   filterEndDate,
 }: {
-  tableData: Invoice[];
+  tableData: any[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterStatus: string;
@@ -437,7 +363,7 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.items.some((c:any) => c.service === filterService));
   }
 
   if (filterStartDate && filterEndDate) {

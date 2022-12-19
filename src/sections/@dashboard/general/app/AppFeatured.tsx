@@ -7,7 +7,6 @@ import { CardContent, Box, Card, Typography, Link, CardProps } from '@mui/materi
 // components
 import Image from '../../../../components/Image';
 import { MotionContainer, varFade } from '../../../../components/animate';
-import { CarouselDots, CarouselArrows } from '../../../../components/carousel';
 
 // ----------------------------------------------------------------------
 
@@ -50,12 +49,7 @@ export default function AppFeatured({ list, ...other }: Props) {
     slidesToScroll: 1,
     rtl: Boolean(theme.direction === 'rtl'),
     beforeChange: (current: number, next: number) => setCurrentIndex(next),
-    ...CarouselDots({
-      zIndex: 9,
-      top: 24,
-      left: 24,
-      position: 'absolute',
-    }),
+   
   };
 
   const handlePrevious = () => {
@@ -74,24 +68,7 @@ export default function AppFeatured({ list, ...other }: Props) {
         ))}
       </Slider>
 
-      <CarouselArrows
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        spacing={0}
-        sx={{
-          top: 16,
-          right: 16,
-          position: 'absolute',
-          '& .arrow': {
-            p: 0,
-            width: 32,
-            height: 32,
-            opacity: 0.48,
-            color: 'common.white',
-            '&:hover': { color: 'common.white', opacity: 1 },
-          },
-        }}
-      />
+    
     </Card>
   );
 }

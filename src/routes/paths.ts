@@ -37,7 +37,7 @@ export const PATH_PAGE = {
 export const PATH_DASHBOARD = {
   root: ROOTS_DASHBOARD,
   general: {
-    app: path(ROOTS_DASHBOARD, '/app'),
+    app: path(ROOTS_DASHBOARD, '/products/list'),
     ecommerce: path(ROOTS_DASHBOARD, '/ecommerce'),
     analytics: path(ROOTS_DASHBOARD, '/analytics'),
     banking: path(ROOTS_DASHBOARD, '/banking'),
@@ -89,11 +89,8 @@ export const PATH_DASHBOARD = {
     root: path(ROOTS_DASHBOARD, '/products/list'),
     add: path(ROOTS_DASHBOARD, '/products/add'),
     view: (productId: string) => path(ROOTS_DASHBOARD, `/products/view/${productId}`),
+    edit: (productId: string) => path(ROOTS_DASHBOARD, `/products/edit/${productId}`),
     // edit: (id: string) => path(ROOTS_DASHBOARD, `/categories/${id}/edit`),
-    // subCategories: (id: string) => path(ROOTS_DASHBOARD, `/categories/${id}/sub-categories`),
-    // subCategoriesEdit: (id: string, subCategoryId: string) =>
-    //   path(ROOTS_DASHBOARD, `/categories/${id}/sub-categories/edit/${subCategoryId}`),
-    // subCategoriesAdd: (id: string) => path(ROOTS_DASHBOARD, `/categories/${id}/sub-categories/add`),
   },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),
