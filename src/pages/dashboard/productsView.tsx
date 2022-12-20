@@ -36,7 +36,7 @@ import { TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../com
 // sections
 import { useDispatch } from 'src/redux/store';
 import { deleteCategory } from 'src/redux/slices/categories';
-import { Info, Prodcuct } from 'src/@types/products';
+import { Info, Prodcuct, productById } from 'src/@types/products';
 import axios from 'src/utils/axios';
 import InfoTableRow from 'src/sections/@dashboard/products/info/InfoTableRow';
 import AddColorDialog from 'src/sections/@dashboard/products/dialogs/add-color-dialog';
@@ -86,7 +86,7 @@ export default function ProuductsView() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [product, setProduct] = useState<Prodcuct | null>(null);
+  const [product, setProduct] = useState<productById | null>(null);
 
   const [openAddColorDialog, setOpenAddColorDialog] = useState(false);
 
@@ -136,11 +136,6 @@ export default function ProuductsView() {
     await getProductById(id as string);
   };
 
-  const dataFiltered = applySortFilter({
-    info: product?.info as Info[],
-    comparator: getComparator(order, orderBy),
-    filterName,
-  });
 
   const denseHeight = dense ? 56 : 76;
 
@@ -160,13 +155,13 @@ export default function ProuductsView() {
   }, []);
 
   return (
-    <Page title="Product: Info">
+    <Page title={'المنتجات'}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product Info"
+          heading={`${product?.arName}`}
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Products', href: PATH_DASHBOARD.products.root },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'المنتجات', href: PATH_DASHBOARD.products.root },
           ]}
           action={
             <Button
@@ -180,26 +175,70 @@ export default function ProuductsView() {
         />
 
         {product && (
-          <Box display="flex" mb={20} justifyContent="space-between">
-            <img src={product.images[0]} />
+          <Box display="flex" mb={'50px'} justifyContent="space-between">
             <Box width="50%" color="red" textAlign="center">
-              <Typography variant="h2" color="black" mb={4}>
-                {product.arName}
-              </Typography>
-              <Box>
-                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
-                  {product.description}
+              <Stack direction={'row'} spacing={2}>
+                <Typography
+                  variant="body1"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                >
+                  الوصف بالعربية :{' '}
                 </Typography>
-              </Box>
-
-              <Typography variant="h5" color="green" mt={4} mb={4}>
-                جم {product.price}
-              </Typography>
-
-              <Typography variant="h5" color="red" mt={4} mb={4}>
-                الخصم: {product.discount}%
-              </Typography>
+                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
+                  {product.arDescription}
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={2} mt={'20px'}>
+                <Typography
+                  variant="body1"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                >
+                  الوصف بالانجلزية :{' '}
+                </Typography>
+                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
+                  {product.enDescription}
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={2} mt={'20px'}>
+                <Typography
+                  variant="body1"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                >
+                  الفئة الفرعية:{' '}
+                </Typography>
+                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
+                  {product.subCategoryArName}
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={2} mt={'20px'}>
+                <Typography
+                  variant="body1"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                >
+                  السعر :
+                </Typography>
+                <Typography variant="h5" color="green" mt={4} mb={4}>
+                  {`${product.price} جم `}
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={2} mt={'20px'}>
+                <Typography
+                  variant="body1"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                >
+                  نسبة الخصم :
+                </Typography>
+                <Typography variant="h5" color="red" mt={4} mb={4}>
+                  % {product.discount}
+                </Typography>
+              </Stack>
             </Box>
+            <img height={'375px'} src={product.images[0]} />
           </Box>
         )}
 
@@ -229,25 +268,35 @@ export default function ProuductsView() {
                     <TableBody>
                       {product?.info
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) =>
-                          row.countBySize.map((item) => (
+                        .map((row) => (
+                          <>
                             <InfoTableRow
-                              key={item.size}
+                              key={row.id}
                               row={row}
-                              infoItem={item}
                               selected={selected.includes(String(row.id))}
-                              onSelectRow={() => onSelectRow(String(row.id))}
-                              onViewRow={() => handleViewRow(String(row.id))}
                               onEditRow={() => handleEditRow(String(row.id))}
                               onDeleteRow={() => handleDeleteRow(String(row.id))}
-                              onViewSubCategory={() => handleViewSubCategories(String(row.id))}
                               onAddSize={() => {
                                 setProductInfoId(String(row.id));
                                 setOpenAddSizeDialog(true);
                               }}
                             />
-                          ))
-                        )}
+                            {row.countBySize.map((item) => (
+                              <InfoTableRow
+                                key={item.size}
+                                row={row}
+                                infoItem={item}
+                                selected={selected.includes(String(row.id))}
+                                onEditRow={() => handleEditRow(String(row.id))}
+                                onDeleteRow={() => handleDeleteRow(String(row.id))}
+                                onAddSize={() => {
+                                  setProductInfoId(String(row.id));
+                                  setOpenAddSizeDialog(true);
+                                }}
+                              />
+                            ))}
+                          </>
+                        ))}
 
                       <TableEmptyRows
                         height={denseHeight}
@@ -287,7 +336,6 @@ export default function ProuductsView() {
         open={openAddSizeDialog}
         handleClose={() => setOpenAddSizeDialog(false)}
         productInfoId={productInfoId}
-     
       />
     </Page>
   );

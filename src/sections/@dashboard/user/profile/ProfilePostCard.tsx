@@ -27,7 +27,6 @@ import { fShortenNumber } from '../../../../utils/formatNumber';
 import Image from '../../../../components/Image';
 import Iconify from '../../../../components/Iconify';
 import MyAvatar from '../../../../components/MyAvatar';
-import { EmojiPicker } from '../../../../components/emoji-picker';
 
 // ----------------------------------------------------------------------
 
@@ -177,11 +176,7 @@ export default function ProfilePostCard({ post }: Props) {
                     <Iconify icon={'ic:round-add-photo-alternate'} width={24} height={24} />
                   </IconButton>
 
-                  <EmojiPicker
-                    value={message}
-                    setValue={setMessage}
-                    sx={{ right: { xs: -80, sm: 0 } }}
-                  />
+                
                 </InputAdornment>
               ),
             }}

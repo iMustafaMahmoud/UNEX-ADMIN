@@ -48,7 +48,7 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
       return {
         EnName: (currentProduct.enName as string) || '',
         ArName: (currentProduct.arName as string) || '',
-        subCategoryId: (currentProduct.subCategoryName as string) || '',
+        subCategoryId: (currentProduct.subCategoryId as string) || '',
         EnDescription: (currentProduct.enDescription as string) || '',
         ArDescription: (currentProduct.arDescription as string) || '',
         Price: currentProduct.price || 0,
@@ -94,7 +94,7 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
     } else {
       try {
         const product:EditProductPayload = values
-        delete product?.subCategoryName
+        delete product?.subCategoryId
         await dispatch(editProduct(id as string, product));
         reset();
         setLoadingSend(false);

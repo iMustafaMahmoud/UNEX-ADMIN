@@ -9,7 +9,6 @@ import { fNumber } from '../../../../utils/formatNumber';
 import { ColorSchema } from '../../../../theme/palette';
 // components
 import Iconify from '../../../../components/Iconify';
-import { BaseOptionChart } from '../../../../components/chart';
 
 // ----------------------------------------------------------------------
 
@@ -50,25 +49,6 @@ export default function AppWidget({
 }: Props) {
   const theme = useTheme();
 
-  const chartOptions = merge(BaseOptionChart(), {
-    colors: [theme.palette[color].main],
-    chart: { sparkline: { enabled: true } },
-    legend: { show: false },
-    plotOptions: {
-      radialBar: {
-        hollow: { size: '78%' },
-        track: { margin: 0 },
-        dataLabels: {
-          name: { show: false },
-          value: {
-            offsetY: 6,
-            color: theme.palette.common.white,
-            fontSize: theme.typography.subtitle2.fontSize,
-          },
-        },
-      },
-    },
-  });
 
   return (
     <RootStyle
@@ -80,7 +60,6 @@ export default function AppWidget({
       <ReactApexChart
         type="radialBar"
         series={[chartData]}
-        options={chartOptions}
         width={86}
         height={86}
       />

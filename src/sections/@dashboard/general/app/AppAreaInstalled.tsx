@@ -1,10 +1,8 @@
-import merge from 'lodash/merge';
 import { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 // @mui
 import { Card, CardHeader, Box, TextField, CardProps } from '@mui/material';
 // components
-import { BaseOptionChart } from '../../../../components/chart';
 
 // ----------------------------------------------------------------------
 
@@ -34,11 +32,7 @@ export default function AppAreaInstalled({
     setSeriesData(event.target.value);
   };
 
-  const chartOptions = merge(BaseOptionChart(), {
-    xaxis: {
-      categories: chartLabels,
-    },
-  });
+
 
   return (
     <Card {...other}>
@@ -84,7 +78,7 @@ export default function AppAreaInstalled({
       {chartData.map((item) => (
         <Box key={item.year} sx={{ mt: 3, mx: 3 }} dir="ltr">
           {item.year === seriesData && (
-            <ReactApexChart type="line" series={item.data} options={chartOptions} height={364} />
+            <ReactApexChart type="line" series={item.data}  height={364} />
           )}
         </Box>
       ))}

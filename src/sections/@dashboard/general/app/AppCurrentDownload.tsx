@@ -6,7 +6,6 @@ import { Card, CardHeader, CardProps } from '@mui/material';
 // utils
 import { fNumber } from '../../../../utils/formatNumber';
 // components
-import { BaseOptionChart } from '../../../../components/chart';
 
 // ----------------------------------------------------------------------
 
@@ -48,52 +47,17 @@ export default function AppCurrentDownload({
   chartColors,
   ...other
 }: Props) {
-  const theme = useTheme();
 
-  const chartLabels = chartData.map((i) => i.label);
 
   const chartSeries = chartData.map((i) => i.value);
 
-  const chartOptions = merge(BaseOptionChart(), {
-    colors: chartColors,
-    labels: chartLabels,
-    stroke: { colors: [theme.palette.background.paper] },
-    legend: { floating: true, horizontalAlign: 'center' },
-    tooltip: {
-      fillSeriesColor: false,
-      y: {
-        formatter: (seriesName: string) => fNumber(seriesName),
-        title: {
-          formatter: (seriesName: string) => `${seriesName}`,
-        },
-      },
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '90%',
-          labels: {
-            value: {
-              formatter: (val: number | string) => fNumber(val),
-            },
-            total: {
-              formatter: (w: { globals: { seriesTotals: number[] } }) => {
-                const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                return fNumber(sum);
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+
 
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
-
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={chartSeries} options={chartOptions} height={280} />
+        <ReactApexChart type="donut" series={chartSeries}  height={280} />
       </ChartWrapperStyle>
     </Card>
   );
