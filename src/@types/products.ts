@@ -26,6 +26,7 @@ export interface Info {
 export interface SizesCount {
   size: Size;
   count: number;
+  itemId?: string;
 }
 
 export enum Size {

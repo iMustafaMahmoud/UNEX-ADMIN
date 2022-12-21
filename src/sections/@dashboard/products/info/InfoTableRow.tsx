@@ -14,12 +14,11 @@ type Props = {
   selected: boolean;
   onEditRow: VoidFunction;
   onDeleteRow: VoidFunction;
-  onAddSize: VoidFunction;
+  onAddSize?: VoidFunction;
 };
 
-export default function InfoTableRow({ row, selected, infoItem, onAddSize }: Props) {
-
-  const { color } = row;
+export default function InfoTableRow({ row, selected, infoItem, onAddSize, onEditRow, onDeleteRow }: Props) {
+  const { color, countBySize } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -31,14 +30,23 @@ export default function InfoTableRow({ row, selected, infoItem, onAddSize }: Pro
     setOpenMenuActions(null);
   };
 
-
   return (
     <TableRow hover selected={selected}>
       <TableCell align="left">
-        {!infoItem && <Box sx={{ bgcolor: color, width: 30, height: 30, borderRadius: '50%',border:'1px solid grey' }} />}
+        {!infoItem && (
+          <Box
+            sx={{
+              bgcolor: color,
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              border: '1px solid grey',
+            }}
+          />
+        )}
       </TableCell>
-      <TableCell align="left">{infoItem?.size}</TableCell>
-      <TableCell align="left">{infoItem?.count}</TableCell>
+      <TableCell align="left">{countBySize.length == 0 ? '---' : infoItem?.size}</TableCell>
+      <TableCell align="left">{countBySize.length == 0 ? '---' : infoItem?.count}</TableCell>
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
@@ -46,7 +54,7 @@ export default function InfoTableRow({ row, selected, infoItem, onAddSize }: Pro
           onClose={handleCloseMenu}
           actions={
             <>
-              <MenuItem
+            {onAddSize!==undefined&&  <MenuItem
                 onClick={() => {
                   onAddSize();
                   handleCloseMenu();
@@ -54,6 +62,25 @@ export default function InfoTableRow({ row, selected, infoItem, onAddSize }: Pro
               >
                 <Iconify icon={'eva:edit-fill'} />
                 اضف مقاس جديد
+              </MenuItem>}
+              <MenuItem
+                onClick={() => {
+                  onEditRow();
+                  handleCloseMenu();
+                }}
+              >
+                <Iconify icon={'eva:edit-fill'} />
+                تعديل
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDeleteRow();
+                  handleCloseMenu();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon={'eva:trash-2-outline'} />
+                مسح
               </MenuItem>
             </>
           }

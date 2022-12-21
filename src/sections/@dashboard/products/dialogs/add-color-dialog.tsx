@@ -2,17 +2,18 @@ import Dialog from '@mui/material/Dialog';
 import { HexColorPicker } from 'react-colorful';
 import { Box, Button, TextField } from '@mui/material';
 import { useState } from 'react';
-import { RHFTextField } from 'src/components/hook-form';
+import { Info } from 'src/@types/products';
 
 export interface AddColorDialogProps {
   open: boolean;
   handleClose: () => void;
   handleAddColor: (color: string) => void;
+  selectedProductInfo?:Info
 }
 
 const AddColorDialog = (props: AddColorDialogProps) => {
-  const { handleClose, open, handleAddColor } = props;
-  const [color, setColor] = useState('#aabbcc');
+  const { handleClose, open, handleAddColor, selectedProductInfo } = props;
+  const [color, setColor] = useState(selectedProductInfo?selectedProductInfo.color:'#aabbcc');
 
   const addColor = async () => {
     await handleAddColor(color);

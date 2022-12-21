@@ -5,7 +5,12 @@ import axios from '../../utils/axios';
 //
 import { dispatch } from '../store';
 import { AddCategoryPayload } from 'src/@types/categories';
-import { AddProductPayload, EditProductPayload, ProductsState } from 'src/@types/products';
+import {
+  AddProductPayload,
+  EditProductPayload,
+  ProductsState,
+  SizesCount,
+} from 'src/@types/products';
 
 // ----------------------------------------------------------------------
 
@@ -78,14 +83,49 @@ export function editProduct(id: string, product: EditProductPayload) {
 export function deleteProduct(id: string) {
   return async () => {
     try {
-      await axios.post(`/product/delete`, null, { params: { id } });
+      await axios.post(`/product/DeleteProduct`, null, { params: { id } });
       dispatch(getProducts());
     } catch (error) {
       console.log({ error });
     }
   };
 }
-
+export function DeleteInfo(id: string) {
+  return async () => {
+    try {
+      await axios.post(`/product/DeleteInfo`, null, { params: { id } });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+}
+export function DeleteItem(id: string) {
+  return async () => {
+    try {
+      await axios.post(`/product/DeleteItem`, null, { params: { id } });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+}
+export function UpdateItem(id: string, item: SizesCount) {
+  return async () => {
+    try {
+      await axios.post(`/product/UpdateItem`, item, { params: { id } });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+}
+export function UpdateInfo(id: string, data: string) {
+  return async () => {
+    try {
+      await axios.post(`/product/UpdateInfo`, { color: data }, { params: { id } });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+}
 export function getProductById(id: string) {
   return async () => {
     try {

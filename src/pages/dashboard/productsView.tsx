@@ -1,53 +1,46 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // @mui
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Card,
   Table,
   Stack,
-  Switch,
   Button,
-  Tooltip,
   Divider,
   TableBody,
   Container,
-  IconButton,
   TableContainer,
   TablePagination,
-  FormControlLabel,
   Typography,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
-import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
-// _mock_
-import { _invoices } from '../../_mock';
+import useTable, { emptyRows } from '../../hooks/useTable';
 // @types
 // components
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../components/table';
+import { TableEmptyRows, TableHeadCustom } from '../../components/table';
 // sections
 import { useDispatch } from 'src/redux/store';
-import { deleteCategory } from 'src/redux/slices/categories';
-import { Info, Prodcuct, productById } from 'src/@types/products';
+import { Info, SizesCount, productById } from 'src/@types/products';
 import axios from 'src/utils/axios';
 import InfoTableRow from 'src/sections/@dashboard/products/info/InfoTableRow';
 import AddColorDialog from 'src/sections/@dashboard/products/dialogs/add-color-dialog';
-import AddSizeDialog from 'src/sections/@dashboard/products/dialogs/add-size-dialog';
+import AddEditSizeDialog from 'src/sections/@dashboard/products/dialogs/add-size-dialog';
+import { DeleteInfo, DeleteItem, UpdateInfo, UpdateItem } from 'src/redux/slices/products';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'color', label: 'اللون', align: 'left' },
   { id: 'sizes', label: 'المقاس', align: 'left' },
-    { id: 'count', label: 'العدد', align: 'left' },
+  { id: 'count', label: 'العدد', align: 'left' },
   //   { id: 'subCategoryName', label: 'SubCategory Name', align: 'left' },
   { id: '' },
 ];
@@ -55,8 +48,6 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function ProuductsView() {
-  const theme = useTheme();
-
   const { themeStretch } = useSettings();
 
   const dispatch = useDispatch();
@@ -71,71 +62,93 @@ export default function ProuductsView() {
     order,
     orderBy,
     rowsPerPage,
-    setPage,
     //
     selected,
     setSelected,
-    onSelectRow,
     onSelectAllRows,
     //
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [filterName, setFilterName] = useState('');
-
   const [product, setProduct] = useState<productById | null>(null);
 
-  const [openAddColorDialog, setOpenAddColorDialog] = useState(false);
+  const [colorDialogOpen, setColorDialogOpen] = useState(false);
 
-  const [openAddSizeDialog, setOpenAddSizeDialog] = useState(false);
+  const [sizeDialogOpen, setSizeDialogOpen] = useState(false);
 
-  const [productInfoId, setProductInfoId] = useState('');
+  const [selectedProductInfoId, setSelectedProductInfoId] = useState('');
+  const [selectedProductItem, setSelectedProductItem] = useState<SizesCount>();
+  const [selectedProductInfo, setSelectedProductInfo] = useState<Info>();
 
-  const handleFilterName = (filterName: string) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-
-  const handleDeleteRow = async (id: string) => {
-    await dispatch(deleteCategory(id));
-    setSelected([]);
-  };
-
-  const handleViewSubCategories = async (id: string) => {
-    navigate(PATH_DASHBOARD.categories.subCategories(id));
-  };
-
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = product?.info.filter((row) => !selected.includes(String(row.id)));
-    setSelected([]);
-  };
-
-  const handleEditRow = (id: string) => {
-    navigate(PATH_DASHBOARD.categories.edit(id));
-  };
-
-  const handleViewRow = (id: string) => {
-    navigate(PATH_DASHBOARD.invoice.view(id));
-  };
-
-  const addColor = async (color: string) => {
+  const handleDeleteProductItem = async (itemId: string) => {
     try {
-      await axios.post(
-        `/product/addinfo`,
-        { color },
-        {
-          params: { productId: id as string },
-        }
-      );
+      await dispatch(DeleteItem(itemId));
+      await getProductById(id as string);
+    } catch {
+      alert('SomeThing Went Wrong');
+    }
+    setSelected([]);
+  };
+
+  const handleSubmitProductItem = async (values: any) => {
+    try {
+      if (selectedProductItem) {
+        dispatch(UpdateItem(String(selectedProductItem.itemId), values));
+      } else {
+        await axios.post(
+          `/product/additem`,
+          { ...values },
+          {
+            params: { ProductInfoId: selectedProductInfoId as string },
+          }
+        );
+      }
+      await getProductById(id as string);
+      setSizeDialogOpen(false);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const handleEditProductItem = (item: SizesCount) => {
+    setSelectedProductItem(item);
+    setSizeDialogOpen(true);
+  };
+  const handleDeleteProductInfo = async (infoId: string) => {
+    try {
+      await dispatch(DeleteInfo(infoId));
+      await getProductById(id as string);
+    } catch {
+      alert('SomeThing Went Wrong');
+    }
+
+    setSelected([]);
+  };
+  const handleEditColor = (infoItem: Info) => {
+    setSelectedProductInfo(infoItem);
+    setColorDialogOpen(true);
+  };
+
+  const handleSubmitColor = async (color: string) => {
+    try {
+      if (selectedProductInfo) {
+        dispatch(UpdateInfo(selectedProductInfo.id, color));
+      } else {
+        await axios.post(
+          `/product/addinfo`,
+          { color },
+          {
+            params: { productId: id as string },
+          }
+        );
+      }
     } catch (error) {
       console.log({ error });
     }
     await getProductById(id as string);
   };
-
 
   const denseHeight = dense ? 56 : 76;
 
@@ -166,7 +179,7 @@ export default function ProuductsView() {
           action={
             <Button
               variant="contained"
-              onClick={() => setOpenAddColorDialog(true)}
+              onClick={() => setColorDialogOpen(true)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
               اضف لون جديد
@@ -177,64 +190,70 @@ export default function ProuductsView() {
         {product && (
           <Box display="flex" mb={'50px'} justifyContent="space-between">
             <Box width="50%" color="red" textAlign="center">
+              <Stack direction={'row'} mb={'50px'} justifyContent={'space-between'}>
+                <Stack direction={'row'} spacing={2}>
+                  <Typography
+                    variant="body1"
+                    color="black"
+                    sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                  >
+                    الفئة الفرعية :
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="black"
+                    sx={{ wordBreak: 'break-word', width: 'auto' }}
+                  >
+                    {product.subCategoryArName}
+                  </Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Typography
+                    variant="body1"
+                    color="black"
+                    sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                  >
+                    السعر :
+                  </Typography>
+                  <Typography variant="body2" color="green" mt={4} mb={4}>
+                    {`${product.price} جم `}
+                  </Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Typography
+                    variant="body1"
+                    color="black"
+                    sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
+                  >
+                    نسبة الخصم :
+                  </Typography>
+                  <Typography variant="body2" color="red" mt={4} mb={4}>
+                    % {product.discount}
+                  </Typography>
+                </Stack>
+              </Stack>
               <Stack direction={'row'} spacing={2}>
-                <Typography
-                  variant="body1"
-                  color="black"
-                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
-                >
-                  الوصف بالعربية :{' '}
+                <Typography variant="body1" color="black" sx={{ fontWeight: 'black' }}>
+                  {`الوصف بالعربية : `}{' '}
                 </Typography>
-                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
+                <Typography
+                  variant="body2"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', width: '400px' }}
+                >
                   {product.arDescription}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={2} mt={'20px'}>
-                <Typography
-                  variant="body1"
-                  color="black"
-                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
-                >
+                <Typography variant="body1" color="black" sx={{ fontWeight: 'black' }}>
                   الوصف بالانجلزية :{' '}
                 </Typography>
-                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
+                <Typography
+                  variant="body2"
+                  color="black"
+                  sx={{ wordBreak: 'break-word', width: '400px' }}
+                >
                   {product.enDescription}
-                </Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2} mt={'20px'}>
-                <Typography
-                  variant="body1"
-                  color="black"
-                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
-                >
-                  الفئة الفرعية:{' '}
-                </Typography>
-                <Typography variant="body2" color="black" sx={{ wordBreak: 'break-word' }}>
-                  {product.subCategoryArName}
-                </Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2} mt={'20px'}>
-                <Typography
-                  variant="body1"
-                  color="black"
-                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
-                >
-                  السعر :
-                </Typography>
-                <Typography variant="h5" color="green" mt={4} mb={4}>
-                  {`${product.price} جم `}
-                </Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2} mt={'20px'}>
-                <Typography
-                  variant="body1"
-                  color="black"
-                  sx={{ wordBreak: 'break-word', fontWeight: 'black' }}
-                >
-                  نسبة الخصم :
-                </Typography>
-                <Typography variant="h5" color="red" mt={4} mb={4}>
-                  % {product.discount}
                 </Typography>
               </Stack>
             </Box>
@@ -274,11 +293,11 @@ export default function ProuductsView() {
                               key={row.id}
                               row={row}
                               selected={selected.includes(String(row.id))}
-                              onEditRow={() => handleEditRow(String(row.id))}
-                              onDeleteRow={() => handleDeleteRow(String(row.id))}
+                              onEditRow={() => handleEditColor(row)}
+                              onDeleteRow={() => handleDeleteProductInfo(String(row.id))}
                               onAddSize={() => {
-                                setProductInfoId(String(row.id));
-                                setOpenAddSizeDialog(true);
+                                setSelectedProductInfoId(String(row.id));
+                                setSizeDialogOpen(true);
                               }}
                             />
                             {row.countBySize.map((item) => (
@@ -287,17 +306,12 @@ export default function ProuductsView() {
                                 row={row}
                                 infoItem={item}
                                 selected={selected.includes(String(row.id))}
-                                onEditRow={() => handleEditRow(String(row.id))}
-                                onDeleteRow={() => handleDeleteRow(String(row.id))}
-                                onAddSize={() => {
-                                  setProductInfoId(String(row.id));
-                                  setOpenAddSizeDialog(true);
-                                }}
+                                onEditRow={() => handleEditProductItem(item)}
+                                onDeleteRow={() => handleDeleteProductItem(String(item.itemId))}
                               />
                             ))}
                           </>
                         ))}
-
                       <TableEmptyRows
                         height={denseHeight}
                         emptyRows={emptyRows(page, rowsPerPage, product.info.length)}
@@ -327,50 +341,28 @@ export default function ProuductsView() {
         </Card>
       </Container>
       <AddColorDialog
-        open={openAddColorDialog}
-        handleClose={() => setOpenAddColorDialog(false)}
-        handleAddColor={addColor}
+        open={colorDialogOpen}
+        selectedProductInfo={selectedProductInfo}
+        handleClose={() => {
+          setSelectedProductInfo(undefined);
+          setColorDialogOpen(false);
+        }}
+        handleAddColor={handleSubmitColor}
       />
 
-      <AddSizeDialog
-        open={openAddSizeDialog}
-        handleClose={() => setOpenAddSizeDialog(false)}
-        productInfoId={productInfoId}
+      <AddEditSizeDialog
+        open={sizeDialogOpen}
+        productItem={selectedProductItem}
+        handleClose={() => {
+          setSelectedProductItem(undefined);
+          setSelectedProductInfoId('');
+          setSizeDialogOpen(false);
+        }}
+        productInfoId={selectedProductInfoId}
+        onSubmit={handleSubmitProductItem}
       />
     </Page>
   );
 }
 
 // ----------------------------------------------------------------------
-
-function applySortFilter({
-  info,
-  comparator,
-  filterName,
-}: {
-  info: Info[];
-  comparator: (a: any, b: any) => number;
-  filterName: string;
-}) {
-  if (info && info.length) {
-    const stabilizedThis = info.map((el, index) => [el, index] as const);
-
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-
-    info = stabilizedThis.map((el) => el[0]);
-
-    if (filterName) {
-      info = info.filter(
-        (item: Record<string, any>) =>
-          item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-          item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-      );
-    }
-  }
-
-  return info;
-}

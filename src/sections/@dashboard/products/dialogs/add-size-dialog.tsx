@@ -1,57 +1,29 @@
-import DialogTitle from '@mui/material/DialogTitle';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable arrow-body-style */
 import Dialog from '@mui/material/Dialog';
-import { HexColorPicker } from 'react-colorful';
-import { Button } from '@mui/material';
 
 import * as Yup from 'yup';
-import { useMemo, useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useMemo, useEffect } from 'react';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Stack, Typography } from '@mui/material';
-// routes
-
-import { EditCategoryPayload } from 'src/@types/categories';
-import { useDispatch } from 'src/redux/store';
-import { createCategory, editCategory } from 'src/redux/slices/categories';
-import { PATH_DASHBOARD } from 'src/routes/paths';
-import { createSubCategory, editSubCategory } from 'src/redux/slices/sub-categories';
-import {
-  EditSubCategoryPayload,
-  SubCategories,
-  SubCategoriesForGetAll,
-} from 'src/@types/sub-categories';
 import { FormProvider, RHFSelect, RHFTextField } from 'src/components/hook-form';
-import axios from 'src/utils/axios';
-import { createProduct } from 'src/redux/slices/products';
-import { Size } from 'src/@types/products';
+import { Size, SizesCount } from 'src/@types/products';
 
 export interface AddSizeDialogProps {
   open: boolean;
   productInfoId: string;
+  productItem?: SizesCount;
   handleClose: () => void;
   handleAddSize?: (color: string) => void;
+  onSubmit(value: any): void;
 }
 
-const AddSizeDialog = (props: AddSizeDialogProps) => {
-  const { handleClose, open, handleAddSize, productInfoId } = props;
-  const [color, setColor] = useState('#aabbcc');
-
-  const addColor = async () => {
-    // await handleAddSize(color);
-    handleClose();
-  };
-
-  const navigate = useNavigate();
-
-  const { id, subCategoryId } = useParams();
-
-  const [loadingSend, setLoadingSend] = useState(false);
-
-  const dispatch = useDispatch();
+const AddEditSizeDialog = (props: AddSizeDialogProps) => {
+  const { handleClose, open } = props;
 
   const NewUserSchema = Yup.object().shape({
     Size: Yup.string().required(),
@@ -60,10 +32,10 @@ const AddSizeDialog = (props: AddSizeDialogProps) => {
 
   const defaultValues = useMemo(() => {
     return {
-      Size: '',
-      Count: 0,
+      Size: props.productItem?.size ? props.productItem?.size : '',
+      Count: props.productItem?.count ? props.productItem?.count : 0,
     };
-  }, []);
+  }, [props.productItem]);
 
   const methods = useForm<any>({
     resolver: yupResolver(NewUserSchema),
@@ -71,47 +43,38 @@ const AddSizeDialog = (props: AddSizeDialogProps) => {
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = methods;
-
-  const onSubmit = async (values: any) => {
-    try {
-      await axios.post(
-        `/product/additem`,
-        { ...values },
-        {
-          params: { ProductInfoId: productInfoId as string },
-        }
-      );
-    } catch (error) {
-      console.log({ error });
+  useEffect(() => {
+    if (props.productItem) {
+      reset(defaultValues);
     }
-    handleClose();
-    // await getProductById(id as string);
-  };
+  }, [props.productItem]);
 
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog onClose={() => {
+      reset({ Count:0,Size:'' });
+      handleClose();
+    }} open={open}>
       <Box width="400px">
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider methods={methods} onSubmit={handleSubmit(props.onSubmit)}>
           <Card>
             <Box sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-                Size:
+                المقاس :
               </Typography>
 
               <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
                 <Stack alignItems="flex-start" spacing={1.5}>
                   <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '100%' }}>
-                    <RHFSelect name="Size" label="Size" placeholder="Size">
+                    <RHFSelect name="Size">
                       {' '}
                       <option value="" />{' '}
                       {Object.values(Size)?.map((size) => (
                         <option key={size} value={size}>
-                          {' '}
-                          {size}{' '}
+                          {size}
                         </option>
                       ))}{' '}
                     </RHFSelect>
@@ -120,20 +83,13 @@ const AddSizeDialog = (props: AddSizeDialogProps) => {
               </Stack>
 
               <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 3 }}>
-                Count:
+                العدد :
               </Typography>
 
               <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
                 <Stack alignItems="flex-start" spacing={1.5}>
                   <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '100%' }}>
-                    <RHFTextField
-                      size="medium"
-                      name={`Count`}
-                      label="Count"
-                      fullWidth
-                      type="number"
-                      // sx={{ maxWidth: { md: 122 } }}
-                    />
+                    <RHFTextField size="medium" name={`Count`} fullWidth type="number" />
                   </Stack>
                 </Stack>
               </Stack>
@@ -143,13 +99,8 @@ const AddSizeDialog = (props: AddSizeDialogProps) => {
           </Card>
 
           <Stack justifyContent="center" direction="row" spacing={2} sx={{ mt: 3, mb: 2 }}>
-            <LoadingButton
-              size="large"
-              variant="contained"
-              loading={loadingSend && isSubmitting}
-              type="submit"
-            >
-              {'Create'} & Send
+            <LoadingButton size="large" variant="contained" loading={isSubmitting} type="submit">
+              {props.productItem ? 'تحديث' : 'انشاء'} & ارسال
             </LoadingButton>
           </Stack>
         </FormProvider>
@@ -158,4 +109,4 @@ const AddSizeDialog = (props: AddSizeDialogProps) => {
   );
 };
 
-export default AddSizeDialog;
+export default AddEditSizeDialog;
