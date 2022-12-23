@@ -5,7 +5,7 @@ import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mu
 // @types
 import { User } from '../../../../@types/user';
 // components
-import Iconify from '../../../../components/Iconify';
+import Iconify from '../../../../components/shared/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 
 // ----------------------------------------------------------------------

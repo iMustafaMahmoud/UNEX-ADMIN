@@ -10,7 +10,7 @@ import GuestGuard from '../guards/GuestGuard';
 // config
 import { PATH_AFTER_LOGIN } from '../config';
 // components
-import LoadingScreen from '../components/LoadingScreen';
+import LoadingScreen from '../components/shared/LoadingScreen';
 import CategoriesList from 'src/pages/dashboard/categories';
 import CategoriesCreate from 'src/pages/dashboard/categoriesCreate';
 import CategoriesEdit from 'src/pages/dashboard/categoriesEdit';
@@ -53,17 +53,7 @@ export default function Router() {
             </GuestGuard>
           ),
         },
-        {
-          path: 'register',
-          element: (
-            <GuestGuard>
-              <Register />
-            </GuestGuard>
-          ),
-        },
         { path: 'login-unprotected', element: <Login /> },
-        { path: 'register-unprotected', element: <Register /> },
-      
       ],
     },
 
@@ -96,8 +86,24 @@ export default function Router() {
             { path: 'view/:id', element: <ProuductsView /> },
           ],
         },
+        {
+          path: 'user',
+          children: [
+            { element: <Navigate to="/dashboard/user" replace />, index: true },
+            { path: 'list', element: <UserList /> },
+            { path: 'add', element: <ProductsCreate /> },
+            { path: 'edit/:id', element: <ProductsEdit /> },
+            { path: 'view/:id', element: <ProuductsView /> },
+          ],
+        },
+        {
+          path: 'social',
+          children: [
+            { element: <Navigate to="/dashboard/social/links" replace />, index: true },
+            { path: 'links', element: <SocialLinks /> },
+          ],
+        },
 
-      
         { path: 'permission-denied', element: <PermissionDenied /> },
       ],
     },
@@ -106,7 +112,6 @@ export default function Router() {
 
 // AUTHENTICATION
 const Login = Loadable(lazy(() => import('../pages/auth/Login')));
-const Register = Loadable(lazy(() => import('../pages/auth/Register')))
 // DASHBOARD
 
 // GENERAL
@@ -121,7 +126,7 @@ const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const UserList = Loadable(lazy(() => import('../pages/dashboard/users/UserList')));
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
-
+const SocialLinks = Loadable(lazy(() => import('../pages/dashboard/Social')));
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDenied = Loadable(lazy(() => import('../pages/dashboard/PermissionDenied')));

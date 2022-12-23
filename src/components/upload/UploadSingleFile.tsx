@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 // type
 import { UploadProps } from './type';
 //
-import Image from '../Image';
+import Image from '../shared/Image';
 import RejectionFiles from './RejectionFiles';
 import BlockContent from './BlockContent';
 

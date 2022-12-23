@@ -92,6 +92,9 @@ export const PATH_DASHBOARD = {
     edit: (productId: string) => path(ROOTS_DASHBOARD, `/products/edit/${productId}`),
     // edit: (id: string) => path(ROOTS_DASHBOARD, `/categories/${id}/edit`),
   },
+  social: {
+    root:path(ROOTS_DASHBOARD,'/social')
+  },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),
     list: path(ROOTS_DASHBOARD, '/invoice/list'),

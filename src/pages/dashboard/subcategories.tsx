@@ -23,11 +23,11 @@ import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import Scrollbar from '../../components/Scrollbar';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableSelectedActions } from '../../components/table';
+import Page from '../../components/shared/Page';
+import Iconify from '../../components/shared/Iconify';
+import Scrollbar from '../../components/shared/Scrollbar';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
+import { TableEmptyRows, TableHeadCustom } from '../../components/table';
 import { useDispatch, useSelector } from 'src/redux/store';
 import { SubCategories } from 'src/@types/sub-categories';
 import { deleteSubCategory, getSubCategories } from 'src/redux/slices/sub-categories';

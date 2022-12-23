@@ -1,6 +1,6 @@
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import SvgIconStyle from '../../../components/SvgIconStyle';
+import SvgIconStyle from '../../../components/shared/SvgIconStyle';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +41,11 @@ const navConfig = [
     subheader: 'management',
     items: [
       {
+        title: 'المستخدمين',
+        path: PATH_DASHBOARD.user.list,
+        icon: ICONS.dashboard,
+      },
+      {
         title: 'الطلبات',
         path: PATH_DASHBOARD.products.root,
         icon: ICONS.cart,
@@ -58,7 +63,7 @@ const navConfig = [
 
       {
         title: 'التواصل الاجتماعي',
-        path: PATH_DASHBOARD.products.root,
+        path: PATH_DASHBOARD.social.root,
         icon: ICONS.mail,
       },
       {

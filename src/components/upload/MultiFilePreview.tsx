@@ -8,9 +8,8 @@ import getFileData from '../../utils/getFileData';
 // type
 import { UploadMultiFileProps } from './type';
 //
-import Image from '../Image';
-import Iconify from '../Iconify';
-import { varFade } from '../animate';
+import Image from '../shared/Image';
+import Iconify from '../shared/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +31,7 @@ export default function MultiFilePreview({
               <ListItem
                 key={key}
                 component={m.div}
-                {...varFade().inRight}
+               
                 sx={{
                   p: 0,
                   m: 0.5,
@@ -74,7 +73,6 @@ export default function MultiFilePreview({
             <ListItem
               key={key}
               component={m.div}
-              {...varFade().inRight}
               sx={{
                 my: 1,
                 px: 2,

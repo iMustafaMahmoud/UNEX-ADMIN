@@ -5,10 +5,8 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-// sections
-import CategoriesNewEditForm from 'src/sections/@dashboard/categories/create-edit-form/categories-create-edit-form';
+import Page from '../../components/shared/Page';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 import SubCategoriesNewEditForm from 'src/sections/@dashboard/categories/sub-categories/create-edit-form/subcategories-create-edit-form';
 import { useParams } from 'react-router';
 

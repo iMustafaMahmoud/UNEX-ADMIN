@@ -21,10 +21,10 @@ import useSettings from '../../hooks/useSettings';
 import useTable, { emptyRows } from '../../hooks/useTable';
 // @types
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import Scrollbar from '../../components/Scrollbar';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import Iconify from '../../components/shared/Iconify';
+import Scrollbar from '../../components/shared/Scrollbar';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom } from '../../components/table';
 // sections
 import { useDispatch } from 'src/redux/store';

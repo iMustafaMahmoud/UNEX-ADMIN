@@ -11,17 +11,9 @@ import { LoadingButton } from '@mui/lab';
 import useAuth from '../../../../hooks/useAuth';
 // utils
 import { fData } from '../../../../utils/formatNumber';
-// _mock
-import { countries } from '../../../../_mock';
 // components
 import { CustomFile } from '../../../../components/upload';
-import {
-  FormProvider,
-  RHFSwitch,
-  RHFSelect,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../../../components/hook-form';
+import { FormProvider, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -149,14 +141,7 @@ export default function AccountGeneral() {
               <RHFTextField name="phoneNumber" label="Phone Number" />
               <RHFTextField name="address" label="Address" />
 
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
-                    {option.label}
-                  </option>
-                ))}
-              </RHFSelect>
+              
 
               <RHFTextField name="state" label="State/Region" />
 

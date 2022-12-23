@@ -4,10 +4,7 @@ import { Container, Typography } from '@mui/material';
 // hooks
 import useAuth from '../hooks/useAuth';
 // components
-import { MotionContainer, varBounce } from '../components/animate';
 // assets
-import { ForbiddenIllustration } from '../assets';
-
 // ----------------------------------------------------------------------
 
 type RoleBasedGuardProp = {
@@ -25,22 +22,20 @@ export default function RoleBasedGuard({ hasContent, roles, children }: RoleBase
 
   if (typeof roles !== 'undefined' && !roles.includes(currentRole)) {
     return hasContent ? (
-      <Container component={MotionContainer} sx={{ textAlign: 'center' }}>
-        <m.div variants={varBounce().in}>
+      <Container sx={{ textAlign: 'center' }}>
+        <m.div>
           <Typography variant="h3" paragraph>
             Permission Denied
           </Typography>
         </m.div>
 
-        <m.div variants={varBounce().in}>
+        <m.div>
           <Typography sx={{ color: 'text.secondary' }}>
             You do not have permission to access this page
           </Typography>
         </m.div>
 
-        <m.div variants={varBounce().in}>
-          <ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
-        </m.div>
+       
       </Container>
     ) : null;
   }

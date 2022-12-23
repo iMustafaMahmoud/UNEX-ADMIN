@@ -14,11 +14,11 @@ import {
 // @types
 import { Friend } from '../../../../@types/user';
 // components
-import Iconify from '../../../../components/Iconify';
-import InputStyle from '../../../../components/InputStyle';
-import MenuPopover from '../../../../components/MenuPopover';
-import SocialsButton from '../../../../components/SocialsButton';
-import SearchNotFound from '../../../../components/SearchNotFound';
+import Iconify from '../../../../components/shared/Iconify';
+import InputStyle from '../../../../components/shared/InputStyle';
+import MenuPopover from '../../../../components/shared/MenuPopover';
+import SocialsButton from '../../../../components/shared/SocialsButton';
+import SearchNotFound from '../../../../components/shared/SearchNotFound';
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ export default function ProfileFriends({ friends, findFriends, onFindFriends }: 
       <InputStyle
         stretchStart={240}
         value={findFriends}
-        onChange={(event) => onFindFriends(event.target.value)}
+        onChange={(event:any) => onFindFriends(event.target.value)}
         placeholder="Find friends..."
         InputProps={{
           startAdornment: (

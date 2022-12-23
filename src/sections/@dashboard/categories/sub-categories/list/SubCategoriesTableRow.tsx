@@ -1,12 +1,7 @@
 import { useState } from 'react';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from '@mui/material';
-// utils
-
-import { Categories } from 'src/@types/categories';
+import { TableRow, TableCell, MenuItem } from '@mui/material';
 import { TableMoreMenu } from 'src/components/table';
-import Iconify from 'src/components/Iconify';
+import Iconify from 'src/components/shared/Iconify';
 import { SubCategories } from 'src/@types/sub-categories';
 
 // ----------------------------------------------------------------------

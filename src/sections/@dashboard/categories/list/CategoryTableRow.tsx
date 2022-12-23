@@ -2,7 +2,7 @@ import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { TableRow, TableCell, MenuItem } from '@mui/material';
-import Iconify from '../../../../components/Iconify';
+import Iconify from '../../../../components/shared/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Categories } from 'src/@types/categories';
 
@@ -43,8 +43,6 @@ export default function CategoryTableRow({
 
   return (
     <TableRow hover selected={selected}>
-    
-
       <TableCell align="left">{name}</TableCell>
 
       <TableCell align="left">{id}</TableCell>

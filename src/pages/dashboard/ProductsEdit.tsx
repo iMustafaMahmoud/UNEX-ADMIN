@@ -5,8 +5,8 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 import { useParams } from 'react-router';
 import ProductssNewEditForm from 'src/sections/@dashboard/products/crreate-edit-form/products-create-edit-form';
 import { useEffect } from 'react';

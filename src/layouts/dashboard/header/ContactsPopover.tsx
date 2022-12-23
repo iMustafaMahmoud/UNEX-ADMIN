@@ -1,17 +1,22 @@
 import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Avatar, Typography, ListItemText, ListItemAvatar, MenuItem } from '@mui/material';
+import {
+  Avatar,
+  Typography,
+  ListItemText,
+  ListItemAvatar,
+  MenuItem,
+  IconButton,
+} from '@mui/material';
 // utils
 import { fToNow } from '../../../utils/formatTime';
 // _mock_
-import { _contacts } from '../../../_mock';
 // components
-import Iconify from '../../../components/Iconify';
-import Scrollbar from '../../../components/Scrollbar';
-import MenuPopover from '../../../components/MenuPopover';
-import BadgeStatus from '../../../components/BadgeStatus';
-import { IconButtonAnimate } from '../../../components/animate';
+import Iconify from '../../../components/shared/Iconify';
+import Scrollbar from '../../../components/shared/Scrollbar';
+import MenuPopover from '../../../components/shared/MenuPopover';
+import BadgeStatus from '../../../components/shared/BadgeStatus';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +37,7 @@ export default function ContactsPopover() {
 
   return (
     <>
-      <IconButtonAnimate
+      <IconButton
         color={open ? 'primary' : 'default'}
         onClick={handleOpen}
         sx={{
@@ -45,7 +50,7 @@ export default function ContactsPopover() {
         }}
       >
         <Iconify icon={'eva:people-fill'} width={20} height={20} />
-      </IconButtonAnimate>
+      </IconButton>
 
       <MenuPopover
         open={Boolean(open)}
@@ -63,11 +68,11 @@ export default function ContactsPopover() {
         }}
       >
         <Typography variant="h6" sx={{ p: 1.5 }}>
-          Contacts <Typography component="span">({_contacts.length})</Typography>
+          Contacts <Typography component="span">({10})</Typography>
         </Typography>
 
         <Scrollbar sx={{ height: ITEM_HEIGHT * 6 }}>
-          {_contacts.map((contact) => (
+          {[].map((contact: any) => (
             <MenuItem key={contact.id}>
               <ListItemAvatar sx={{ position: 'relative' }}>
                 <Avatar src={contact.avatar} />

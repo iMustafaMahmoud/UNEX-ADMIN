@@ -7,19 +7,12 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 // _mock_
-import { _userPayment, _userAddressBook, _userInvoices, _userAbout } from '../../_mock';
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import Iconify from '../../components/shared/Iconify';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 // sections
-import {
-  AccountGeneral,
-  AccountBilling,
-  AccountSocialLinks,
-  AccountNotifications,
-  AccountChangePassword,
-} from '../../sections/@dashboard/user/account';
+import { AccountGeneral, AccountSocialLinks } from '../../sections/@dashboard/user/account';
 
 // ----------------------------------------------------------------------
 
@@ -35,31 +28,31 @@ export default function UserAccount() {
       component: <AccountGeneral />,
     },
     {
-      value: 'billing',
-      icon: <Iconify icon={'ic:round-receipt'} width={20} height={20} />,
+      value: 'social_links',
+      icon: <Iconify icon={'eva:share-fill'} width={20} height={20} />,
       component: (
-        <AccountBilling
-          cards={_userPayment}
-          addressBook={_userAddressBook}
-          invoices={_userInvoices}
+        <AccountSocialLinks
+          myProfile={{
+            company: 'ds',
+            id: '',
+            cover: '',
+            position: '',
+            follower: 10,
+            country: '',
+            email: '',
+            facebookLink: '',
+            following: 15,
+            instagramLink: '',
+            linkedinLink: '',
+            quote: '',
+            role: '',
+            school: '',
+            twitterLink: '',
+          }}
         />
       ),
     },
-    {
-      value: 'notifications',
-      icon: <Iconify icon={'eva:bell-fill'} width={20} height={20} />,
-      component: <AccountNotifications />,
-    },
-    {
-      value: 'social_links',
-      icon: <Iconify icon={'eva:share-fill'} width={20} height={20} />,
-      component: <AccountSocialLinks myProfile={_userAbout} />,
-    },
-    {
-      value: 'change_password',
-      icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
-      component: <AccountChangePassword />,
-    },
+    
   ];
 
   return (

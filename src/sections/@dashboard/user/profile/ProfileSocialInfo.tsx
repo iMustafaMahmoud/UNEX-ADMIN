@@ -4,7 +4,7 @@ import { Link, Card, CardHeader, Stack } from '@mui/material'; // @types
 // @types
 import { Profile } from '../../../../@types/user';
 // components
-import Iconify from '../../../../components/Iconify';
+import Iconify from '../../../../components/shared/Iconify';
 
 // ----------------------------------------------------------------------
 

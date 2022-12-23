@@ -16,10 +16,10 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import useSettings from '../../hooks/useSettings';
 import useTable, { emptyRows } from '../../hooks/useTable';
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import Scrollbar from '../../components/Scrollbar';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import Iconify from '../../components/shared/Iconify';
+import Scrollbar from '../../components/shared/Scrollbar';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom } from '../../components/table';
 import { useDispatch, useSelector } from 'src/redux/store';
 import { deleteProduct, getProducts } from 'src/redux/slices/products';

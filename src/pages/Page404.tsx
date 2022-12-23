@@ -4,8 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Button, Typography, Container } from '@mui/material';
 // components
-import Page from '../components/Page';
-import { MotionContainer, varBounce } from '../components/animate';
+import Page from '../components/shared/Page';
 // assets
 import { PageNotFoundIllustration } from '../assets';
 
@@ -26,22 +25,22 @@ const ContentStyle = styled('div')(({ theme }) => ({
 export default function Page404() {
   return (
     <Page title="404 Page Not Found">
-      <Container component={MotionContainer}>
+      <Container>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
-          <m.div variants={varBounce().in}>
+          <m.div>
             <Typography variant="h3" paragraph>
               Sorry, page not found!
             </Typography>
           </m.div>
 
-          <m.div variants={varBounce().in}>
+          <m.div>
             <Typography sx={{ color: 'text.secondary' }}>
               Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL?
               Be sure to check your spelling.
             </Typography>
           </m.div>
 
-          <m.div variants={varBounce().in}>
+          <m.div>
             <PageNotFoundIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
           </m.div>
 

@@ -1,4 +1,3 @@
-import { paramCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
@@ -26,10 +25,10 @@ import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 import { User } from '../../../@types/user';
 // _mock_
 // components
-import Page from '../../../components/Page';
-import Iconify from '../../../components/Iconify';
-import Scrollbar from '../../../components/Scrollbar';
-import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
+import Page from '../../../components/shared/Page';
+import Iconify from '../../../components/shared/Iconify';
+import Scrollbar from '../../../components/shared/Scrollbar';
+import HeaderBreadcrumbs from '../../../components/shared/HeaderBreadcrumbs';
 import {
   TableNoData,
   TableEmptyRows,
@@ -84,7 +83,7 @@ export default function UserList() {
   const [tableData, setTableData] = useState<User[]>([]);
 
   const [filterName, setFilterName] = useState('');
-
+console.log("userListing")
   const [filterRole, setFilterRole] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUser,setCurrentUser]=useState<User|undefined>()

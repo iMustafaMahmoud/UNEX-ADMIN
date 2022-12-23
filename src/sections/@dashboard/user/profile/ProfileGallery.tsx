@@ -8,9 +8,9 @@ import cssStyles from '../../../../utils/cssStyles';
 // @types
 import { Gallery } from '../../../../@types/user';
 // components
-import Image from '../../../../components/Image';
-import Iconify from '../../../../components/Iconify';
-import LightboxModal from '../../../../components/LightboxModal';
+import Image from '../../../../components/shared/Image';
+import Iconify from '../../../../components/shared/Iconify';
+import LightboxModal from '../../../../components/shared/LightboxModal';
 
 // ----------------------------------------------------------------------
 

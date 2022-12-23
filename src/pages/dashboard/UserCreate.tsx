@@ -8,8 +8,8 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import useSettings from '../../hooks/useSettings';
 // _mock_
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 // sections
 import UserNewEditForm from '../../sections/@dashboard/user/UserNewEditForm';
 

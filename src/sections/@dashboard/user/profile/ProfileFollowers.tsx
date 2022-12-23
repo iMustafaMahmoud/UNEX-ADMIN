@@ -4,7 +4,7 @@ import { Box, Grid, Card, Button, Avatar, Typography } from '@mui/material'; // 
 // @types
 import { Follower } from '../../../../@types/user';
 // components
-import Iconify from '../../../../components/Iconify';
+import Iconify from '../../../../components/shared/Iconify';
 
 // ----------------------------------------------------------------------
 

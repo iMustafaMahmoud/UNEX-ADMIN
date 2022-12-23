@@ -5,12 +5,9 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // _mock_
-import { _userCards } from '../../_mock';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-// sections
-import { UserCard } from '../../sections/@dashboard/user/cards';
+import Page from '../../components/shared/Page';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +37,9 @@ export default function UserCards() {
             },
           }}
         >
-          {_userCards.map((user) => (
+          {/* {[1,2,3].map((user) => (
             <UserCard key={user.id} user={user} />
-          ))}
+          ))} */}
         </Box>
       </Container>
     </Page>

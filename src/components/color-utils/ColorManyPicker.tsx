@@ -1,7 +1,7 @@
 // @mui
 import { Box, Checkbox, BoxProps, CheckboxProps } from '@mui/material';
 //
-import Iconify from '../Iconify';
+import Iconify from '../shared/Iconify';
 
 // ----------------------------------------------------------------------
 

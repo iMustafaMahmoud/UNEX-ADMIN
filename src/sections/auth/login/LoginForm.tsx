@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
-import Iconify from '../../../components/Iconify';
+import Iconify from '../../../components/shared/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
@@ -98,7 +98,7 @@ export default function LoginForm() {
         variant="contained"
         loading={isSubmitting}
       >
-        Login
+        تسجيل الدخول
       </LoadingButton>
     </FormProvider>
   );

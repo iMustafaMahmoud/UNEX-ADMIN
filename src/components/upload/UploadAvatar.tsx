@@ -5,8 +5,8 @@ import { styled } from '@mui/material/styles';
 // type
 import { UploadProps } from './type';
 //
-import Image from '../Image';
-import Iconify from '../Iconify';
+import Image from '../shared/Image';
+import Iconify from '../shared/Iconify';
 import RejectionFiles from './RejectionFiles';
 
 // ----------------------------------------------------------------------

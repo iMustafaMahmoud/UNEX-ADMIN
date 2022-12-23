@@ -10,11 +10,10 @@ import useAuth from '../../hooks/useAuth';
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 // _mock_
-import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } from '../../_mock';
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import Iconify from '../../components/shared/Iconify';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 // sections
 import {
   Profile,
@@ -61,28 +60,45 @@ export default function UserProfile() {
     {
       value: 'profile',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <Profile myProfile={_userAbout} posts={_userFeeds} />,
+      component: (
+        <Profile
+          myProfile={{
+            company: 'ds',
+            id: '',
+            cover: '',
+            position: '',
+            follower: 10,
+            country: '',
+            email: '',
+            facebookLink: '',
+            following: 15,
+            instagramLink: '',
+            linkedinLink: '',
+            quote: '',
+            role: '',
+            school: '',
+            twitterLink: '',
+          }}
+          posts={[]}
+        />
+      ),
     },
     {
       value: 'followers',
       icon: <Iconify icon={'eva:heart-fill'} width={20} height={20} />,
-      component: <ProfileFollowers followers={_userFollowers} />,
+      component: <ProfileFollowers followers={[]} />,
     },
     {
       value: 'friends',
       icon: <Iconify icon={'eva:people-fill'} width={20} height={20} />,
       component: (
-        <ProfileFriends
-          friends={_userFriends}
-          findFriends={findFriends}
-          onFindFriends={handleFindFriends}
-        />
+        <ProfileFriends friends={[]} findFriends={findFriends} onFindFriends={handleFindFriends} />
       ),
     },
     {
       value: 'gallery',
       icon: <Iconify icon={'ic:round-perm-media'} width={20} height={20} />,
-      component: <ProfileGallery gallery={_userGallery} />,
+      component: <ProfileGallery gallery={[]} />,
     },
   ];
 
@@ -104,7 +120,25 @@ export default function UserProfile() {
             position: 'relative',
           }}
         >
-          <ProfileCover myProfile={_userAbout} />
+          <ProfileCover
+            myProfile={{
+              company: 'ds',
+              id: '',
+              cover: '',
+              position: '',
+              follower: 10,
+              country: '',
+              email: '',
+              facebookLink: '',
+              following: 15,
+              instagramLink: '',
+              linkedinLink: '',
+              quote: '',
+              role: '',
+              school: '',
+              twitterLink: '',
+            }}
+          />
 
           <TabsWrapperStyle>
             <Tabs

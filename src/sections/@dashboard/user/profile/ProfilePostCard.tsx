@@ -24,9 +24,9 @@ import useAuth from '../../../../hooks/useAuth';
 import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
 // components
-import Image from '../../../../components/Image';
-import Iconify from '../../../../components/Iconify';
-import MyAvatar from '../../../../components/MyAvatar';
+import Image from '../../../../components/shared/Image';
+import Iconify from '../../../../components/shared/Iconify';
+import MyAvatar from '../../../../components/shared/MyAvatar';
 
 // ----------------------------------------------------------------------
 

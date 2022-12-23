@@ -1,6 +1,6 @@
 import { Quill } from 'react-quill';
 // components
-import Iconify from '../Iconify';
+import Iconify from '../shared/Iconify';
 //
 import EditorToolbarStyle from './EditorToolbarStyle';
 

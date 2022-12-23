@@ -5,7 +5,7 @@ import useLocales from '../../../hooks/useLocales';
 // guards
 import RoleBasedGuard from '../../../guards/RoleBasedGuard';
 //
-import Iconify from '../../Iconify';
+import Iconify from '../../shared/Iconify';
 //
 import { NavItemProps } from '../type';
 import { ListItemStyle, ListItemTextStyle, ListItemIconStyle } from './style';

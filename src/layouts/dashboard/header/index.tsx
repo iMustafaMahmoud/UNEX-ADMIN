@@ -1,6 +1,6 @@
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 // hooks
 import useOffSetTop from '../../../hooks/useOffSetTop';
 import useResponsive from '../../../hooks/useResponsive';
@@ -9,15 +9,11 @@ import cssStyles from '../../../utils/cssStyles';
 // config
 import { HEADER, NAVBAR } from '../../../config';
 // components
-import Logo from '../../../components/Logo';
-import Iconify from '../../../components/Iconify';
-import { IconButtonAnimate } from '../../../components/animate';
+import Logo from '../../../components/shared/Logo';
+import Iconify from '../../../components/shared/Iconify';
 //
 // import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
-import LanguagePopover from './LanguagePopover';
-import ContactsPopover from './ContactsPopover';
-import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
@@ -83,18 +79,15 @@ export default function DashboardHeader({
         {isDesktop && verticalLayout && <Logo sx={{ mr: 2.5 }} />}
 
         {!isDesktop && (
-          <IconButtonAnimate onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
+          <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
             <Iconify icon="eva:menu-2-fill" />
-          </IconButtonAnimate>
+          </IconButton>
         )}
 
         {/* <Searchbar /> */}
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          {/* <LanguagePopover />
-          <NotificationsPopover />
-          <ContactsPopover /> */}
           <AccountPopover />
         </Stack>
       </Toolbar>

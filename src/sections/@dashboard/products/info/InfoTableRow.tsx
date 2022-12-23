@@ -2,7 +2,7 @@
 import { useState } from 'react';
 // @mui
 import { TableRow, TableCell, MenuItem, Box } from '@mui/material';
-import Iconify from '../../../../components/Iconify';
+import Iconify from '../../../../components/shared/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Info, SizesCount } from 'src/@types/products';
 

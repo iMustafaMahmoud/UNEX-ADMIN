@@ -1,8 +1,5 @@
-import sumBy from 'lodash/sumBy';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// @mui
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Tab,
@@ -25,34 +22,17 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
-// _mock_
-import { _invoices } from '../../_mock';
-// @types
-// import { Invoice } from '../../@types/invoice';
-// components
-import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Iconify from '../../components/Iconify';
-import Scrollbar from '../../components/Scrollbar';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import Label from '../../components/shared/Label';
+import Iconify from '../../components/shared/Iconify';
+import Scrollbar from '../../components/shared/Scrollbar';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 import {
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
   TableSelectedActions,
 } from '../../components/table';
-// sections
-
-// ----------------------------------------------------------------------
-
-const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
-];
 
 const TABLE_HEAD = [
   { id: 'invoiceNumber', label: 'Client', align: 'left' },
@@ -67,8 +47,6 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function InvoiceList() {
-  const theme = useTheme();
-
   const { themeStretch } = useSettings();
 
   const navigate = useNavigate();
@@ -92,7 +70,7 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState([]);
 
   const [filterName, setFilterName] = useState('');
 
@@ -104,33 +82,10 @@ export default function InvoiceList() {
 
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
 
-  const handleFilterName = (filterName: string) => {
-    setFilterName(filterName);
-    setPage(0);
-  };
-
-  const handleFilterService = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterService(event.target.value);
-  };
-
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
-  };
-
   const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
+    const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
     setSelected([]);
     setTableData(deleteRows);
-  };
-
-  const handleEditRow = (id: string) => {
-    navigate(PATH_DASHBOARD.invoice.edit(id));
-  };
-
-  const handleViewRow = (id: string) => {
-    navigate(PATH_DASHBOARD.invoice.view(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -153,16 +108,7 @@ export default function InvoiceList() {
   const denseHeight = dense ? 56 : 76;
 
   const getLengthByStatus = (status: string) =>
-    tableData.filter((item) => item.status === status).length;
-
-  const getTotalPriceByStatus = (status: string) =>
-    sumBy(
-      tableData.filter((item) => item.status === status),
-      'totalPrice'
-    );
-
-  const getPercentByStatus = (status: string) =>
-    (getLengthByStatus(status) / tableData.length) * 100;
+    tableData.filter((item: any) => item.status === status).length;
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
@@ -228,8 +174,6 @@ export default function InvoiceList() {
 
           <Divider />
 
-        
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
               {selected.length > 0 && (
@@ -240,7 +184,7 @@ export default function InvoiceList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row: any) => row.id)
                     )
                   }
                   actions={
@@ -284,13 +228,12 @@ export default function InvoiceList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row: any) => row.id)
                     )
                   }
                 />
 
                 <TableBody>
-                
                   <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
@@ -312,8 +255,6 @@ export default function InvoiceList() {
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
             />
-
-          
           </Box>
         </Card>
       </Container>
@@ -363,7 +304,9 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c:any) => c.service === filterService));
+    tableData = tableData.filter((item) =>
+      item.items.some((c: any) => c.service === filterService)
+    );
   }
 
   if (filterStartDate && filterEndDate) {

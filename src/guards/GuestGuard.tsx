@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 // routes
 import { PATH_DASHBOARD } from '../routes/paths';
 // components
-import LoadingScreen from '../components/LoadingScreen';
+import LoadingScreen from '../components/shared/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ export default function GuestGuard({ children }: GuestGuardProps) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to={PATH_DASHBOARD.root} />;
+    return <Navigate to={PATH_DASHBOARD.products.root} />;
   }
 
   if (!isInitialized) {

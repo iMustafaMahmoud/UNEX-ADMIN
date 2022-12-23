@@ -14,8 +14,8 @@ import useSettings from '../../hooks/useSettings';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../components/shared/Page';
+import HeaderBreadcrumbs from '../../components/shared/HeaderBreadcrumbs';
 // guards
 import RoleBasedGuard from '../../guards/RoleBasedGuard';
 

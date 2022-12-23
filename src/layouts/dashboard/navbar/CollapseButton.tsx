@@ -1,7 +1,6 @@
 // @mui
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 // components
-import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +11,7 @@ type Props = {
 
 export default function CollapseButton({ onToggleCollapse, collapseClick }: Props) {
   return (
-    <IconButtonAnimate onClick={onToggleCollapse}>
+    <IconButton onClick={onToggleCollapse}>
       <Box
         sx={{
           lineHeight: 0,
@@ -27,7 +26,7 @@ export default function CollapseButton({ onToggleCollapse, collapseClick }: Prop
       >
         {icon}
       </Box>
-    </IconButtonAnimate>
+    </IconButton>
   );
 }
 

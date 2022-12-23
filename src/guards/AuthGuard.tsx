@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 // pages
 import Login from '../pages/auth/Login';
 // components
-import LoadingScreen from '../components/LoadingScreen';
+import LoadingScreen from '../components/shared/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
