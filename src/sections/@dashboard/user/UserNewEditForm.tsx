@@ -40,9 +40,9 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
       name: currentUser?.name || '',
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
-      country: currentUser?.country || '',
       password: currentUser?.password || '',
-      package: currentUser?.Package || '',
+      address: currentUser?.address || '',
+      city: currentUser?.city || '',
     }),
     [currentUser]
   );
@@ -73,7 +73,6 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
 
   const onSubmit = async (data: FormValuesProps) => {
  
-    console.log('dataaa', data);
   };
 
   useEffect(() => {

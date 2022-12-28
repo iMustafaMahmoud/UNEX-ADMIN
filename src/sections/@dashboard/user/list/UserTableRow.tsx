@@ -1,7 +1,7 @@
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
+import { Avatar, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
 // @types
 import { User } from '../../../../@types/user';
 // components
@@ -25,9 +25,8 @@ export default function UserTableRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-  const theme = useTheme();
 
-  const { name, email, Package, status, createdOn} = row;
+  const { name, email, phoneNumber} = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -41,7 +40,6 @@ export default function UserTableRow({
 
   return (
     <TableRow hover selected={selected}>
-
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt={name} src={''} sx={{ mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
@@ -50,10 +48,7 @@ export default function UserTableRow({
       </TableCell>
 
       <TableCell align="left"> {email}</TableCell>
-      <TableCell align="left"> {Package}</TableCell>
-
-      <TableCell align="left"> {status}</TableCell>
-
+      <TableCell align="left"> {phoneNumber}</TableCell>
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}

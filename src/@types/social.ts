@@ -1,10 +1,10 @@
 export interface SocialType {
-  Email: string;
-  PhoneNumber: string;
-  Instagram: string;
-  Youtube: string;
-  Whatsapp: string;
-  Address: string;
-  Facebook: string;
+  email: string;
+  phoneNumber: string;
+  instagram: string;
+  youtube: string;
+  whatsapp: string;
+  address: string;
+  facebook: string;
   id?:string
 }

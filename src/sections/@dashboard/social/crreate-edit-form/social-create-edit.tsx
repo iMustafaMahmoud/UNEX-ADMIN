@@ -1,52 +1,48 @@
 /* eslint-disable arrow-body-style */
 import * as Yup from 'yup';
 import { useMemo, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Stack, Typography } from '@mui/material';
-import { useDispatch } from 'src/redux/store';
-import { PATH_DASHBOARD } from 'src/routes/paths';
 import { FormProvider, RHFTextField } from 'src/components/hook-form';
-import { EditProductPayload } from 'src/@types/products';
 import { SocialType } from 'src/@types/social';
 import { UpdateSocialInfo } from 'src/redux/slices/socalLinks';
+import { useNavigate } from 'react-router';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  isEdit?: boolean;
   currentData?: SocialType;
 };
 
-export default function SocialLinksEditForm({ isEdit, currentData }: Props) {
-
+export default function SocialLinksEditForm({ currentData }: Props) {
   const [loadingSend, setLoadingSend] = useState(false);
-
+  const navigate = useNavigate();
 
   const NewLinksSchema = Yup.object().shape({
-    Email: Yup.string().email('Not Valid'),
-    Facebook: Yup.string().url('not valid Url'),
-    Instagram: Yup.string().url('not valid Url'),
-    Youtube: Yup.string().url('not valid Url'),
-    PhoneNumber: Yup.string().min(11, 'Not Valid'),
-    Whatsapp: Yup.string().min(11, 'Not Valid'),
-    Address: Yup.string(),
+    email: Yup.string().email('Not Valid'),
+    facebook: Yup.string().url('not valid Url'),
+    instagram: Yup.string().url('not valid Url'),
+    youtube: Yup.string().url('not valid Url'),
+    phoneNumber: Yup.string().min(11, 'Not Valid'),
+    whatsapp: Yup.string().min(11, 'Not Valid'),
+    address: Yup.string(),
   });
 
   const defaultValues = useMemo(() => {
     if (currentData) {
+      console.log('current data', currentData);
       return {
-        Email: (currentData.Email as string) || '',
-        PhoneNumber: (currentData.PhoneNumber as string) || '',
-        Instagram: (currentData.Instagram as string) || '',
-        Youtube: (currentData.Youtube as string) || '',
-        Whatsapp: (currentData.Whatsapp as string) || '',
-        Address: currentData.Address || '',
-        Facebook: currentData.Facebook || '',
+        email: (currentData.email as string) ?? '',
+        phoneNumber: (currentData.phoneNumber as string) ?? '',
+        instagram: (currentData.instagram as string) ?? '',
+        youtube: (currentData.youtube as string) ?? '',
+        whatsapp: (currentData.whatsapp as string) ?? '',
+        address: currentData.address ?? '',
+        facebook: currentData.facebook ?? '',
       };
     }
   }, [currentData]);
@@ -63,45 +59,43 @@ export default function SocialLinksEditForm({ isEdit, currentData }: Props) {
   } = methods;
 
   useEffect(() => {
-    if ( currentData) {
+    if (currentData) {
       reset(defaultValues);
     }
-   
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentData]);
-
+  }, [currentData]);
   const onSubmit = async (values: any) => {
-   try {
-     await UpdateSocialInfo(values, currentData?.id ?? undefined);
-     reset();
-    // navigate(PATH_DASHBOARD.social.root);
-     setLoadingSend(false);
-   } catch (error) {
-     console.error(error);
-   }
+    console.log('values', values);
+    try {
+      await UpdateSocialInfo(values, currentData?.id ?? undefined);
+      window.location.reload();
+      reset();
+      setLoadingSend(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <Box sx={{ p: 3 }}>
-          <SocialLinkInput headText="رابط Facebook : " name={'Facebook'} />
-          <SocialLinkInput headText="رابط Instagram : " name={'Instagram'} />
-          <SocialLinkInput headText="رابط Youtube : " name={'Youtube'} />
-          <SocialLinkInput headText="رقم whatsapp : " name={'Whatsapp'} />
-          <SocialLinkInput headText="البريد الالكتروني : " name={'ِEmail'} />
-          <SocialLinkInput headText="رقم التواصل : " name={'PhoneNumber'} />
-          <SocialLinkInput headText="العنوان الرئيسي : " name={'Address'} />
+          <SocialLinkInput headText="رابط Facebook : " name={'facebook'} />
+          <SocialLinkInput headText="رابط Instagram : " name={'instagram'} />
+          <SocialLinkInput headText="رابط Youtube : " name={'youtube'} />
+          <SocialLinkInput headText="رقم whatsapp : " name={'whatsapp'} />
+          <SocialLinkInput headText="البريد الالكتروني : " name={'email'} />
+          <SocialLinkInput headText="رقم التواصل : " name={'phoneNumber'} />
+          <SocialLinkInput headText="العنوان الرئيسي : " name={'address'} />
 
           <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
         </Box>
-        <Stack justifyContent="center" direction="row" spacing={2} sx={{ mt: 3,mb:3}}>
+        <Stack justifyContent="center" direction="row" spacing={2} sx={{ mt: 3, mb: 3 }}>
           <LoadingButton
             size="large"
             variant="contained"
             loading={loadingSend && isSubmitting}
             type="submit"
-            sx={{width:'30%'}}
+            sx={{ width: '30%' }}
           >
             تحديث
           </LoadingButton>
@@ -110,7 +104,7 @@ export default function SocialLinksEditForm({ isEdit, currentData }: Props) {
     </FormProvider>
   );
 }
-const SocialLinkInput = ({headText,name}:{headText:string,name:string}) => {
+const SocialLinkInput = ({ headText, name }: { headText: string; name: string }) => {
   return (
     <Stack mt={'10px'}>
       <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
@@ -123,7 +117,6 @@ const SocialLinkInput = ({headText,name}:{headText:string,name:string}) => {
           </Stack>
         </Stack>
       </Stack>
-      
     </Stack>
   );
-}
+};

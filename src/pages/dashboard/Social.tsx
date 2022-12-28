@@ -12,9 +12,10 @@ const SocialLinks = () =>
   }, []);
   const fetchSocialLinks = async () => {
     let response = await getSocialLinks();
-    console.log('response',response);
+    console.log(response?.[0]);
+    setLinks(response?.[0])
     return response;
   };
-  return <SocialLinksEditForm />;
+  return <SocialLinksEditForm currentData={links} />;
 };
 export default SocialLinks;

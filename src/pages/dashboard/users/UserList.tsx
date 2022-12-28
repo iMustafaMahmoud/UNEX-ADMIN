@@ -42,18 +42,12 @@ import axiosInstance from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
-
-const Sort_Options = [
-  'all',
-  'acsending',
-  'descending'
-];
+const Sort_Options = ['all', 'acsending', 'descending'];
 
 const TABLE_HEAD = [
   { id: 'Name', label: 'Name', align: 'left' },
-  { id: 'Email', label: 'Email', align: 'left' },
-  { id: 'Package', label: 'Package', align: 'left' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'email', label: 'Email', align: 'left' },
+  { id: 'phone', label: 'Phone', align: 'left' },
   { id: '' },
 ];
 
@@ -80,24 +74,21 @@ export default function UserList() {
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState<User[]>([]);
+  const [tableData, setTableData] = useState<{ user: User[] }[]>([]);
 
   const [filterName, setFilterName] = useState('');
-console.log("userListing")
   const [filterRole, setFilterRole] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentUser,setCurrentUser]=useState<User|undefined>()
+  const [currentUser, setCurrentUser] = useState<User | undefined>();
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
+  const { currentTab: filterStatus, onChangeTab } = useTabs('all');
 
-  useEffect(() =>
-  {
-   ( async () => {
-     const data = await axiosInstance.get('/users');
-     setTableData(data.data.data)
+  useEffect(() => {
+    (async () => {
+      const response = await axiosInstance.get('/Administration/getadminusers');
+      setTableData(response.data);
     })().catch(console.error);
-
-  },[])
+  }, []);
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
@@ -109,20 +100,20 @@ console.log("userListing")
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData?.filter((row) => row._id !== id);
+    const deleteRow = tableData?.filter((row) => row.user[0].id !== id);
     setSelected([]);
     setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData?.filter((row) => !selected.includes(row._id));
+    const deleteRows = tableData?.filter((row) => !selected.includes(row.user[0].id));
     setSelected([]);
     setTableData(deleteRows);
   };
 
   const handleEditRow = (user: User) => {
     setCurrentUser(user);
-    setModalOpen(true)
+    setModalOpen(true);
   };
 
   const dataFiltered = applySortFilter({
@@ -133,13 +124,10 @@ console.log("userListing")
     filterStatus,
   });
 
-
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterStatus);
-  
-  
 
   return (
     <Page title="User: List">
@@ -181,7 +169,7 @@ console.log("userListing")
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData?.map((row) => row._id)
+                      tableData?.map((row) => row.user[0].id)
                     )
                   }
                   actions={
@@ -205,7 +193,7 @@ console.log("userListing")
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData?.map((row) => row._id)
+                      tableData?.map((row) => row.user[0].id)
                     )
                   }
                 />
@@ -216,12 +204,12 @@ console.log("userListing")
                       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       ?.map((row) => (
                         <UserTableRow
-                          key={row._id}
-                          row={row}
-                          selected={selected.includes(row._id)}
-                          onSelectRow={() => onSelectRow(row._id)}
-                          onDeleteRow={() => handleDeleteRow(row._id)}
-                          onEditRow={() => handleEditRow(row)}
+                          key={row.user[0].id}
+                          row={row.user[0]}
+                          selected={selected.includes(row.user[0].id)}
+                          onSelectRow={() => onSelectRow(row.user[0].id)}
+                          onDeleteRow={() => handleDeleteRow(row.user[0].id)}
+                          onEditRow={() => handleEditRow(row.user[0])}
                         />
                       ))}
 
@@ -245,12 +233,14 @@ console.log("userListing")
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
+              labelDisplayedRows={(info) => ` ${info.from + '/' + info.to + ' من ' + info.count}`}
+              labelRowsPerPage="صفوف في الصفحة:"
             />
           </Box>
         </Card>
       </Container>
       <UserModal
-        isEdit={currentUser?true:false}
+        isEdit={currentUser ? true : false}
         currentUser={currentUser}
         open={modalOpen}
         handleClose={() => setModalOpen(false)}
@@ -268,7 +258,7 @@ function applySortFilter({
   filterStatus,
   filterRole,
 }: {
-  tableData: User[];
+  tableData: { user: User[] }[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterStatus: string;
@@ -301,4 +291,3 @@ function applySortFilter({
 
   return tableData;
 }
-
