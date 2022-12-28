@@ -1,24 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 // @mui
 import {
   Box,
   Card,
   Table,
   Button,
-  Tooltip,
   Divider,
   TableBody,
   Container,
-  IconButton,
   TableContainer,
   TablePagination,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 
-// hooks
-import useTabs from '../../../hooks/useTabs';
 import useSettings from '../../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // @types
@@ -42,12 +37,10 @@ import axiosInstance from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
-const Sort_Options = ['all', 'acsending', 'descending'];
-
 const TABLE_HEAD = [
-  { id: 'Name', label: 'Name', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'phone', label: 'Phone', align: 'left' },
+  { id: 'Name', label: 'الاسم', align: 'left' },
+  { id: 'email', label: 'الايميل', align: 'left' },
+  { id: 'phone', label: 'الموبايل', align: 'left' },
   { id: '' },
 ];
 
@@ -72,43 +65,29 @@ export default function UserList() {
 
   const { themeStretch } = useSettings();
 
-  const navigate = useNavigate();
-
   const [tableData, setTableData] = useState<{ user: User[] }[]>([]);
 
   const [filterName, setFilterName] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | undefined>();
 
-  const { currentTab: filterStatus, onChangeTab } = useTabs('all');
-
   useEffect(() => {
-    (async () => {
-      const response = await axiosInstance.get('/Administration/getadminusers');
-      setTableData(response.data);
-    })().catch(console.error);
+    fetchUsers().catch(console.error);
   }, []);
 
+  const fetchUsers = async () => {
+    const response = await axiosInstance.get('/Administration/getadminusers');
+    setTableData(response.data);
+  };
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
     setPage(0);
-  };
-
-  const handleFilterRole = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterRole(event.target.value);
   };
 
   const handleDeleteRow = (id: string) => {
     const deleteRow = tableData?.filter((row) => row.user[0].id !== id);
     setSelected([]);
     setTableData(deleteRow);
-  };
-
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData?.filter((row) => !selected.includes(row.user[0].id));
-    setSelected([]);
-    setTableData(deleteRows);
   };
 
   const handleEditRow = (user: User) => {
@@ -120,23 +99,18 @@ export default function UserList() {
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
-    filterRole,
-    filterStatus,
   });
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+  const isNotFound = !dataFiltered.length && !!filterName;
 
   return (
-    <Page title="User: List">
+    <Page title="المستخدمين">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading="قائمة المستخدمين"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User List', href: PATH_DASHBOARD.user.root },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'قائمة المستخدمين', href: PATH_DASHBOARD.user.root },
           ]}
           action={
             <Button
@@ -144,20 +118,14 @@ export default function UserList() {
               onClick={() => setModalOpen(true)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              New User
+              اضف مستخدم جديد
             </Button>
           }
         />
 
         <Card>
           <Divider />
-          <UserTableToolbar
-            filterName={filterName}
-            filterRole={filterRole}
-            onFilterName={handleFilterName}
-            onFilterRole={handleFilterRole}
-            optionsRole={Sort_Options}
-          />
+          <UserTableToolbar filterName={filterName} onFilterName={handleFilterName} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
@@ -171,13 +139,6 @@ export default function UserList() {
                       checked,
                       tableData?.map((row) => row.user[0].id)
                     )
-                  }
-                  actions={
-                    <Tooltip title="Delete">
-                      <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                        <Iconify icon={'eva:trash-2-outline'} />
-                      </IconButton>
-                    </Tooltip>
                   }
                 />
               )}
@@ -240,6 +201,10 @@ export default function UserList() {
         </Card>
       </Container>
       <UserModal
+        afterSubmit={() => {
+          fetchUsers();
+          setModalOpen(false);
+        }}
         isEdit={currentUser ? true : false}
         currentUser={currentUser}
         open={modalOpen}
@@ -255,17 +220,12 @@ function applySortFilter({
   tableData,
   comparator,
   filterName,
-  filterStatus,
-  filterRole,
 }: {
   tableData: { user: User[] }[];
   comparator: (a: any, b: any) => number;
   filterName: string;
-  filterStatus: string;
-  filterRole: string;
 }) {
   const stabilizedThis = tableData?.map((el, index) => [el, index] as const);
-
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -276,17 +236,9 @@ function applySortFilter({
 
   if (filterName) {
     tableData = tableData?.filter(
-      (item: Record<string, any>) =>
-        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (item: { user: User[] }) =>
+        item.user[0].name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
-  }
-
-  if (filterStatus !== 'all') {
-    tableData = tableData?.filter((item: Record<string, any>) => item.status === filterStatus);
-  }
-
-  if (filterRole !== 'all') {
-    tableData = tableData?.filter((item: Record<string, any>) => item.role === filterRole);
   }
 
   return tableData;

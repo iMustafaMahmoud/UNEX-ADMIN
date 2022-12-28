@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const StyledModalBox = styled(Box)({
   width: '50%',
-  height: '97%',
+  height: '50%',
   margin: '1%',
   background: 'white',
   padding: '20px',

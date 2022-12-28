@@ -5,34 +5,34 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 // @types
 import { User } from '../../../@types/user';
-// components
-import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import axiosInstance from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
-interface FormValuesProps extends Omit<User, 'avatarUrl'> {
-  avatarUrl: CustomFile | string | null;
-}
-
 type Props = {
   isEdit: boolean;
   currentUser?: User;
+  afterSubmit(): void;
 };
 
-export default function UserNewEditForm({ isEdit, currentUser }: Props) {
-
+export default function UserNewEditForm({ isEdit, currentUser, afterSubmit }: Props) {
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email().required('Email is required'),
+    password: Yup.string()
+      .required('password is required')
+      .min(8)
+      .matches(
+        new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'),
+        'Password must be strong'
+      ),
     phoneNumber: Yup.string().min(11).required('Phone number is required'),
-    country: Yup.string().required('country is required'),
-    password: Yup.string().required('Company is required').min(8),
-    package: Yup.string().required('package is required'),
+    address: Yup.string(),
+    city: Yup.string(),
   });
 
   const defaultValues = useMemo(
@@ -41,13 +41,13 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
       password: currentUser?.password || '',
-      address: currentUser?.address || '',
-      city: currentUser?.city || '',
+      address: currentUser?.address || 'Cairo,Egypt',
+      city: currentUser?.city || 'Cairo',
     }),
     [currentUser]
   );
 
-  const methods = useForm<FormValuesProps>({
+  const methods = useForm<User>({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
   });
@@ -71,44 +71,31 @@ export default function UserNewEditForm({ isEdit, currentUser }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentUser]);
 
-  const onSubmit = async (data: FormValuesProps) => {
- 
+  const onSubmit = async (data: User) => {
+    try {
+      axiosInstance.post('/Administration/createadmin', data);
+      afterSubmit();
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  useEffect(() => {
-    (async () => {
-      const response = await axiosInstance.get('/packages');
-    })().catch(console.error);
-  }, []);
 
   return (
     <Stack height={'100%'}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        
-        <Stack direction={'column'} justifyContent={'space-between'} height={'90%'}>
-          <Box
-            sx={{
-              display: 'grid',
-              columnGap: 2,
-              rowGap: 5,
-              gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-            }}
-          >
-            <RHFTextField name="name" label="Full Name" />
-            <RHFTextField name="email" type={'email'} label="Email Address" />
-            <RHFTextField name="phoneNumber" label="Phone Number" />
-            <RHFTextField name="password" type={'password'} label="Password" />
-
-          </Box>
-
-          <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+        <Stack direction={'column'} justifyContent={'space-between'} height={'90%'} spacing={2}>
+          <RHFTextField name="name" label="الاسم" />
+          <RHFTextField name="email" type={'email'} label="الايميل" />
+          <RHFTextField name="phoneNumber" label="رقم الموبايل" />
+          <RHFTextField name="password" type={'password'} label="كلمة السر" />
+          <Stack alignItems="center" sx={{ mt: 3 }}>
             <LoadingButton
-              style={{ width: '200px', height: '50px' }}
+              style={{ width: '250px', height: '50px' }}
               type="submit"
               variant="contained"
               loading={isSubmitting}
             >
-              {!isEdit ? 'Create User' : 'Save Changes'}
+              {!isEdit ? 'انشاء مستخدم' : 'حفظ التعديلات'}
             </LoadingButton>
           </Stack>
         </Stack>
