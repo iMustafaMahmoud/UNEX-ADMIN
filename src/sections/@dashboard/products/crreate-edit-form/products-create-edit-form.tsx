@@ -14,6 +14,7 @@ import { FormProvider, RHFSelect, RHFTextField } from 'src/components/hook-form'
 import axios from 'src/utils/axios';
 import { createProduct, editProduct } from 'src/redux/slices/products';
 import { EditProductPayload } from 'src/@types/products';
+import { UploadMultiFile } from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
@@ -118,11 +119,23 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
    
       getSubCategories();
   }, []);
-
+  const uploadImage = async (file: File) => {
+    const form = new FormData()
+    form.append('file',file)
+    try {
+      await axios.post(`/Product/uploadImage`, form, { params: {  } });
+     
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+const [files,setFiles]=useState<any>([])
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Card>
+        
         <Box sx={{ p: 3 }}>
+          <UploadMultiFile files={files} onDropAccepted={(files)=>{console.log(files[0])}} />
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
             الاسم بالانجليزية:
           </Typography>
