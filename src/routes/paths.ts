@@ -93,7 +93,7 @@ export const PATH_DASHBOARD = {
     // edit: (id: string) => path(ROOTS_DASHBOARD, `/categories/${id}/edit`),
   },
   social: {
-    root:path(ROOTS_DASHBOARD,'/social')
+    root: path(ROOTS_DASHBOARD, '/social'),
   },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),

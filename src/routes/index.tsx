@@ -56,6 +56,10 @@ export default function Router() {
         { path: 'login-unprotected', element: <Login /> },
       ],
     },
+    {
+      path: '',
+      element: <DashboardLayout />,
+    },
 
     // Dashboard Routes
     {
