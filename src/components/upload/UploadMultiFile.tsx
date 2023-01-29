@@ -49,8 +49,9 @@ export default function UploadMultiFile({
             bgcolor: 'error.lighter',
           }),
         }}
+        
       >
-        <input {...getInputProps()} />
+        <input  {...getInputProps()} />
 
         <BlockContent />
       </DropZoneStyle>
@@ -62,15 +63,11 @@ export default function UploadMultiFile({
       {files.length > 0 && (
         <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
           <Button color="inherit" size="small" onClick={onRemoveAll}>
-            Remove all
+            مسح
           </Button>
-          <Button size="small" variant="contained" onClick={onUpload}>
-            Upload files
-          </Button>
+         
         </Stack>
       )}
-
-      {helperText && helperText}
     </Box>
   );
 }
