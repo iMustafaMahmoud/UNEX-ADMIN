@@ -68,7 +68,7 @@ const navConfig = [
       },
       {
         title: 'روابط البانر',
-        path: PATH_DASHBOARD.products.root,
+        path: PATH_DASHBOARD.banner.root,
         icon: ICONS.dashboard,
       },
     ],

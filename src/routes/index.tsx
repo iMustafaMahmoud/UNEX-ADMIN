@@ -107,6 +107,13 @@ export default function Router() {
             { path: 'links', element: <SocialLinks /> },
           ],
         },
+        {
+          path: 'banner',
+          children: [
+            { element: <Navigate to="/dashboard/banner/list" replace />, index: true },
+            { path: 'list', element: <Banner /> },
+          ],
+        },
 
         { path: 'permission-denied', element: <PermissionDenied /> },
       ],
@@ -121,8 +128,7 @@ const Login = Loadable(lazy(() => import('../pages/auth/Login')));
 // GENERAL
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/products')));
 
-
-// 
+//
 
 // USER
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
@@ -131,7 +137,7 @@ const UserList = Loadable(lazy(() => import('../pages/dashboard/users/UserList')
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
 const SocialLinks = Loadable(lazy(() => import('../pages/dashboard/Social')));
+const Banner = Loadable(lazy(() => import('../pages/dashboard/Banner')));
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDenied = Loadable(lazy(() => import('../pages/dashboard/PermissionDenied')));
-

@@ -95,6 +95,9 @@ export const PATH_DASHBOARD = {
   social: {
     root: path(ROOTS_DASHBOARD, '/social'),
   },
+  banner: {
+    root: path(ROOTS_DASHBOARD, '/banner'),
+  },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),
     list: path(ROOTS_DASHBOARD, '/invoice/list'),

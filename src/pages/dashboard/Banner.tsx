@@ -34,6 +34,7 @@ import InfoTableRow from 'src/sections/@dashboard/products/info/InfoTableRow';
 import AddColorDialog from 'src/sections/@dashboard/products/dialogs/add-color-dialog';
 import AddEditSizeDialog from 'src/sections/@dashboard/products/dialogs/add-size-dialog';
 import { DeleteInfo, DeleteItem, UpdateInfo, UpdateItem } from 'src/redux/slices/products';
+import AddBannerDialog from 'src/sections/@dashboard/banner/dialogs/add-banner-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function ProuductsView() {
+export default function Banner() {
   const { themeStretch } = useSettings();
 
   const dispatch = useDispatch();
@@ -74,13 +75,12 @@ export default function ProuductsView() {
 
   const [product, setProduct] = useState<productById | null>(null);
 
-  const [colorDialogOpen, setColorDialogOpen] = useState(false);
+  const [bannerDialogOpen, setBannerDialogOpen] = useState(false);
 
   const [sizeDialogOpen, setSizeDialogOpen] = useState(false);
 
   const [selectedProductInfoId, setSelectedProductInfoId] = useState('');
   const [selectedProductItem, setSelectedProductItem] = useState<SizesCount>();
-  const [selectedProductInfo, setSelectedProductInfo] = useState<Info>();
 
   const handleDeleteProductItem = async (itemId: string) => {
     try {
@@ -126,29 +126,6 @@ export default function ProuductsView() {
 
     setSelected([]);
   };
-  const handleEditColor = (infoItem: Info) => {
-    setSelectedProductInfo(infoItem);
-    setColorDialogOpen(true);
-  };
-
-  const handleSubmitColor = async (color: string) => {
-    try {
-      if (selectedProductInfo) {
-        dispatch(UpdateInfo(selectedProductInfo.id, color));
-      } else {
-        await axios.post(
-          `/product/addinfo`,
-          { color },
-          {
-            params: { productId: id as string },
-          }
-        );
-      }
-    } catch (error) {
-      console.log({ error });
-    }
-    await getProductById(id as string);
-  };
 
   const denseHeight = dense ? 56 : 76;
 
@@ -168,21 +145,21 @@ export default function ProuductsView() {
   }, []);
 
   return (
-    <Page title={'المنتجات'}>
+    <Page title={'asasdsad'}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading={`${product?.arName}`}
           links={[
             { name: 'الرئيسية', href: PATH_DASHBOARD.root },
-            { name: 'المنتجات', href: PATH_DASHBOARD.products.root },
+            { name: 'روابط البانر', href: PATH_DASHBOARD.banner.root },
           ]}
           action={
             <Button
               variant="contained"
-              onClick={() => setColorDialogOpen(true)}
+              onClick={() => setBannerDialogOpen(true)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              اضف لون جديد
+              اضف بانر جديد
             </Button>
           }
         />
@@ -263,92 +240,9 @@ export default function ProuductsView() {
 
         <Card>
           <Divider />
-
-          {product && product.info && (
-            <>
-              <Scrollbar>
-                <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                  <Table size={dense ? 'small' : 'medium'}>
-                    <TableHeadCustom
-                      order={order}
-                      orderBy={orderBy}
-                      headLabel={TABLE_HEAD}
-                      rowCount={product?.info.length}
-                      numSelected={selected.length}
-                      onSort={onSort}
-                      onSelectAllRows={(checked) =>
-                        onSelectAllRows(
-                          checked,
-                          product.info.map((row) => String(row.id))
-                        )
-                      }
-                    />
-
-                    <TableBody>
-                      {product?.info
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => (
-                          <>
-                            <InfoTableRow
-                              key={row.id}
-                              row={row}
-                              selected={selected.includes(String(row.id))}
-                              onEditRow={() => handleEditColor(row)}
-                              onDeleteRow={() => handleDeleteProductInfo(String(row.id))}
-                              onAddSize={() => {
-                                setSelectedProductInfoId(String(row.id));
-                                setSizeDialogOpen(true);
-                              }}
-                            />
-                            {row.countBySize.map((item) => (
-                              <InfoTableRow
-                                key={item.size}
-                                row={row}
-                                infoItem={item}
-                                selected={selected.includes(String(row.id))}
-                                onEditRow={() => handleEditProductItem(item)}
-                                onDeleteRow={() => handleDeleteProductItem(String(item.itemId))}
-                              />
-                            ))}
-                          </>
-                        ))}
-                      <TableEmptyRows
-                        height={denseHeight}
-                        emptyRows={emptyRows(page, rowsPerPage, product.info.length)}
-                      />
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-
-              <Box sx={{ position: 'relative' }}>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={product?.info.length as number}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={onChangePage}
-                  onRowsPerPageChange={onChangeRowsPerPage}
-                  labelDisplayedRows={(info) =>
-                    ` ${info.from + '/' + info.to + ' من ' + info.count}`
-                  }
-                  labelRowsPerPage="صفوف في الصفحة:"
-                />
-              </Box>
-            </>
-          )}
         </Card>
       </Container>
-      <AddColorDialog
-        open={colorDialogOpen}
-        selectedProductInfo={selectedProductInfo}
-        handleClose={() => {
-          setSelectedProductInfo(undefined);
-          setColorDialogOpen(false);
-        }}
-        handleAddColor={handleSubmitColor}
-      />
+      <AddBannerDialog open={bannerDialogOpen} handleClose={() => setBannerDialogOpen(false)} />
 
       <AddEditSizeDialog
         open={sizeDialogOpen}

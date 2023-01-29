@@ -7,11 +7,10 @@ export async function UpdateSocialInfo(data: SocialType, id?: string) {
     if (id) {
       await axios.post(`Contact/Update`, data, {
         params: {
-          id:id
-        }
+          id: id,
+        },
       });
     } else {
-
       await axios.post(`Contact/Add`, data);
     }
   } catch (error) {
@@ -25,6 +24,6 @@ export async function getSocialLinks() {
     });
     return response.data;
   } catch (error) {
-    alert({error});
+    alert({ error });
   }
 }

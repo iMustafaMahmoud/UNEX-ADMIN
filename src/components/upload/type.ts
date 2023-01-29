@@ -27,5 +27,5 @@ export interface UploadMultiFileProps extends DropzoneOptions {
   helperText?: ReactNode;
   onUpload?: VoidFunction;
   onRemove?: (file: File | string) => void;
-  onRemoveAll?: VoidFunction;
+  onRemoveAll?: (file: any) => void;
 }
