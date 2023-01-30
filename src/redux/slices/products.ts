@@ -82,10 +82,14 @@ export function editProduct(id: string, product: EditProductPayload) {
 
 export function deleteProduct(id: string) {
   return async () => {
+    console.log("deteket")
     try {
-      await axios.post(`/product/DeleteProduct`, null, { params: { id } });
+      await axios.post(`product/DeleteProduct`, null, { params: { id } });
+      console.log("success")
       dispatch(getProducts());
     } catch (error) {
+          console.log('deteket Error');
+
       console.log({ error });
     }
   };

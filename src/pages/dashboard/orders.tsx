@@ -29,7 +29,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function Banner() {
+export default function Orders() {
   const { themeStretch } = useSettings();
   const [banners, setBanners] = useState<
     | {
@@ -42,28 +42,18 @@ export default function Banner() {
 
   const [bannerDialogOpen, setBannerDialogOpen] = useState(false);
 
-  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
   const getBanners = async () => {
-    const response = await axiosInstance.get('/redirections/get');
-    setBanners(response.data)
+      const response = await axiosInstance.get('/Order/allorders');
+      console.log('getData', response);
+    setBanners(response.data);
   };
   useEffect(() => {
     getBanners();
   }, []);
   const { id } = useParams();
 
-  const onDeleteRow = async (bannerID: string) => {
-    try {
-      const response = await axiosInstance.post('/redirections/delete',null, {
-        params: {
-          id: bannerID,
-        },
-      });
-      getBanners();
-    } catch (error) {}
-  };
+
 
   return (
     <Page title={'Banners'}>
@@ -90,18 +80,20 @@ export default function Banner() {
 
             <TableBody>
               {banners?.map((row) => (
-                <BannerTableRow key={row.id} row={row} onDeleteRow={() => onDeleteRow(row.id)} />
+                <BannerTableRow key={row.id} row={row} onDeleteRow={() => {}} />
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
-      <AddBannerDialog open={bannerDialogOpen}
+      <AddBannerDialog
+        open={bannerDialogOpen}
         onSubmit={() => {
           getBanners();
-          setBannerDialogOpen(false)
-          }}
-        handleClose={() => setBannerDialogOpen(false)} />
+          setBannerDialogOpen(false);
+        }}
+        handleClose={() => setBannerDialogOpen(false)}
+      />
     </Page>
   );
 }

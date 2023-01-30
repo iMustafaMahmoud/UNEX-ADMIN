@@ -257,7 +257,7 @@ export default function ProuductsView() {
                 </Typography>
               </Stack>
             </Box>
-            <img height={'375px'} src={product.images[0]} />
+            <img height={'375px'} src={product.images[1]?.url} />
           </Box>
         )}
 

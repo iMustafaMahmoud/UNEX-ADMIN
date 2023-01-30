@@ -1,7 +1,7 @@
 import { useDropzone } from 'react-dropzone';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Button } from '@mui/material';
+import { Box, Stack, Button, CircularProgress } from '@mui/material';
 // type
 import { UploadMultiFileProps } from './type';
 //
@@ -30,7 +30,9 @@ export default function UploadMultiFile({
   onRemove,
   onRemoveAll,
   helperText,
+  disableDrop,
   sx,
+  loading,
   ...other
 }: UploadMultiFileProps) {
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
@@ -39,35 +41,31 @@ export default function UploadMultiFile({
 
   return (
     <Box sx={{ width: '100%', ...sx }}>
-      <DropZoneStyle
-        {...getRootProps()}
-        sx={{
-          ...(isDragActive && { opacity: 0.72 }),
-          ...((isDragReject || error) && {
-            color: 'error.main',
-            borderColor: 'error.light',
-            bgcolor: 'error.lighter',
-          }),
-        }}
-        
-      >
-        <input  {...getInputProps()} />
+      {!disableDrop &&  (
+        <DropZoneStyle 
+          {...getRootProps()}
+          sx={{
+            ...(isDragActive && { opacity: 0.72 }),
+            ...((isDragReject || error) && {
+              color: 'error.main',
+              borderColor: 'error.light',
+              bgcolor: 'error.lighter',
+            }),
+          }}
+        >
+          <input  {...getInputProps()} />
 
-        <BlockContent />
-      </DropZoneStyle>
+          <BlockContent loading={loading} />
+        </DropZoneStyle>
+      )}
+      {
 
-      {fileRejections.length > 0 && <RejectionFiles fileRejections={fileRejections} />}
+      }
+
+      {fileRejections?.length > 0 && <RejectionFiles fileRejections={fileRejections} />}
 
       <MultiFilePreview files={files} showPreview={showPreview} onRemove={onRemove} />
 
-      {files.length > 0 && (
-        <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
-          <Button color="inherit" size="small" onClick={onRemoveAll}>
-            مسح
-          </Button>
-         
-        </Stack>
-      )}
     </Box>
   );
 }

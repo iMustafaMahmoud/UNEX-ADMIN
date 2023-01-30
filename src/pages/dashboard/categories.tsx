@@ -160,7 +160,7 @@ export default function CategoriesList() {
 
                 <TableBody>
                   {categories
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <CategoryTableRow
                         key={row.id}

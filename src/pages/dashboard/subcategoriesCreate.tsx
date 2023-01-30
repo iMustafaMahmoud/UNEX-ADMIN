@@ -22,9 +22,9 @@ export default function SubCategoriesCreate() {
         <HeaderBreadcrumbs
           heading="Add SubCategory"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'SubCategories', href: PATH_DASHBOARD.categories.subCategories(id as string) },
-            { name: 'New SubCategory' },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'الفئات الفرعية', href: PATH_DASHBOARD.categories.subCategories(id as string) },
+            { name: 'فئة فرعية جديده' },
           ]}
         />
         <SubCategoriesNewEditForm />

@@ -74,6 +74,12 @@ const AddBannerDialog = (props: AddBannerDialogProps) => {
         <UploadMultiFile
           files={files}
           maxFiles={1}
+          showPreview={true}
+          onRemove={(index) => {
+            const newFiles = [...files]
+            newFiles.splice(index, 1)
+            setFiles([...newFiles]);
+          }}
           onDropAccepted={(files: any[]) => {
             setFiles(files);
           }}

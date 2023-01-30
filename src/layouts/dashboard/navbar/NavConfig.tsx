@@ -26,18 +26,7 @@ const ICONS = {
 };
 
 const navConfig = [
-  // GENERAL
-  // ----------------------------------------------------------------------
-  // {
-  //   subheader: 'general',
-  //   items: [
-  //     { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
-  //       ],
-  // },
-
-  // MANAGEMENT
-  // ----------------------------------------------------------------------
-  {
+    {
     subheader: 'management',
     items: [
       {
@@ -47,7 +36,7 @@ const navConfig = [
       },
       {
         title: 'الطلبات',
-        path: PATH_DASHBOARD.products.root,
+        path: PATH_DASHBOARD.orders.root,
         icon: ICONS.cart,
       },
       {

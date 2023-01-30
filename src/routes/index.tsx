@@ -114,6 +114,13 @@ export default function Router() {
             { path: 'list', element: <Banner /> },
           ],
         },
+        {
+          path: 'orders',
+          children: [
+            { element: <Navigate to="/dashboard/orders/list" replace />, index: true },
+            { path: 'list', element: <Orders /> },
+          ],
+        },
 
         { path: 'permission-denied', element: <PermissionDenied /> },
       ],
@@ -138,6 +145,7 @@ const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
 const SocialLinks = Loadable(lazy(() => import('../pages/dashboard/Social')));
 const Banner = Loadable(lazy(() => import('../pages/dashboard/Banner')));
+const Orders = Loadable(lazy(() => import('../pages/dashboard/orders')));
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDenied = Loadable(lazy(() => import('../pages/dashboard/PermissionDenied')));

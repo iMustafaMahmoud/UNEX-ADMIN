@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -25,10 +25,9 @@ import { useDispatch, useSelector } from 'src/redux/store';
 import { deleteProduct, getProducts } from 'src/redux/slices/products';
 import ProductsTableRow from 'src/sections/@dashboard/products/list/ProductsTableRow';
 import { Prodcuct } from 'src/@types/products';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
-
-
 
 const TABLE_HEAD = [
   { id: 'name', label: 'اسم المنتج', align: 'left' },
@@ -41,13 +40,17 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function ProuductsList() {
-
   const { themeStretch } = useSettings();
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<string>('');
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
+  const onDeleteRow = async () => {
+    handleDeleteRow(selectedProduct);
+    setDeleteModalOpen(false);
+    setSelectedProduct('');
+  };
   const { products } = useSelector((state) => state.products);
 
   const {
@@ -64,7 +67,6 @@ export default function ProuductsList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
-
   const handleDeleteRow = async (id: string) => {
     await dispatch(deleteProduct(id));
     setSelected([]);
@@ -74,18 +76,13 @@ export default function ProuductsList() {
     navigate(PATH_DASHBOARD.categories.subCategories(id));
   };
 
- 
-
   const handleEditRow = (id: string) => {
-    
     navigate(PATH_DASHBOARD.products.edit(id));
   };
 
   const handleViewRow = (id: string) => {
     navigate(PATH_DASHBOARD.products.view(id));
   };
-
-
 
   const denseHeight = dense ? 56 : 76;
 
@@ -109,7 +106,7 @@ export default function ProuductsList() {
               to={PATH_DASHBOARD.products.add}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-             اضافه منتج جديد
+              اضافه منتج جديد
             </Button>
           }
         />
@@ -118,8 +115,6 @@ export default function ProuductsList() {
           <Divider />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-        
-
               <Table size={dense ? 'small' : 'medium'}>
                 <TableHeadCustom
                   order={order}
@@ -127,7 +122,6 @@ export default function ProuductsList() {
                   headLabel={TABLE_HEAD}
                   rowCount={products.length}
                   onSort={onSort}
-                 
                 />
 
                 <TableBody>
@@ -141,7 +135,10 @@ export default function ProuductsList() {
                         onSelectRow={() => onSelectRow(String(row.productId))}
                         onViewRow={() => handleViewRow(String(row.productId))}
                         onEditRow={() => handleEditRow(String(row.productId))}
-                        onDeleteRow={() => handleDeleteRow(String(row.productId))}
+                        onDeleteRow={() => {
+                          setSelectedProduct(String(row.productId));
+                          setDeleteModalOpen(true);
+                        }}
                         onViewSubCategory={() => handleViewSubCategories(String(row.productId))}
                       />
                     ))}
@@ -169,41 +166,16 @@ export default function ProuductsList() {
             />
           </Box>
         </Card>
+        <ConfirmationDialog
+          handleClose={() => setDeleteModalOpen(false)}
+          open={deleteModalOpen}
+          submit={() => {
+            onDeleteRow();
+          }}
+        />
       </Container>
     </Page>
   );
 }
 
 // ----------------------------------------------------------------------
-
-function applySortFilter({
-  products,
-  comparator,
-  filterName,
-}: {
-  products: Prodcuct[];
-  comparator: (a: any, b: any) => number;
-  filterName: string;
-}) {
-  if (products.length) {
-    const stabilizedThis = products.map((el, index) => [el, index] as const);
-
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-
-    products = stabilizedThis.map((el) => el[0]);
-
-    if (filterName) {
-      products = products.filter(
-        (item: Record<string, any>) =>
-          item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-          item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-      );
-    }
-  }
-
-  return products;
-}
