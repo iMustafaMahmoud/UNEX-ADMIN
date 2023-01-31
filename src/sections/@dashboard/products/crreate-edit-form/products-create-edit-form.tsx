@@ -120,24 +120,26 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
     setLoadingSend(true);
     const formData = new FormData();
     formData.append('file', file);
-    if (isEdit) {
-      const response = await axios.post('product/uploadImage', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        params: {
-          product_id: id,
-        },
-      });
-      files.push(response?.data?.url);
-    } else {
-      const response = await axios.post('/files/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      files.push(response.data);
-    }
+    try {
+      if (isEdit) {
+        const response = await axios.post('product/uploadImage', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            product_id: id,
+          },
+        });
+        files.push(response?.data?.url);
+      } else {
+        const response = await axios.post('/files/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        files.push(response.data);
+      }
+    } catch (error) {}
     setLoadingSend(false);
   };
 
