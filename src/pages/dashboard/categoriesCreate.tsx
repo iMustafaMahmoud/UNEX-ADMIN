@@ -19,11 +19,11 @@ export default function CategoriesCreate() {
     <Page title="Categories: Create a new category">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Add Category"
+          heading="اضافة فئة"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Categories', href: PATH_DASHBOARD.categories.root },
-            { name: 'New Category' },
+            { name: 'الرئيسية ', href: PATH_DASHBOARD.root },
+            { name: 'الفئات', href: PATH_DASHBOARD.categories.root },
+            { name: 'فئة جديدة' },
           ]}
         />
 

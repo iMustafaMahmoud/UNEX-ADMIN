@@ -28,24 +28,29 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
 
   const { id, subCategoryId } = useParams();
   const [loadingSend, setLoadingSend] = useState(false);
+  const [files, setFiles] = useState<any[]>([]);
 
   const dispatch = useDispatch();
 
   const [subCategories, setSubCategories] = useState<SubCategoriesForGetAll[]>([]);
 
   const NewUserSchema = Yup.object().shape({
-    EnName: Yup.string().required(),
-    ArName: Yup.string().required(),
-    subCategoryId: Yup.string().required(),
-    EnDescription: Yup.string().required(),
-    ArDescription: Yup.string().required(),
-    Price: Yup.number().required(),
-    Discount: Yup.number().required().max(100, 'maximum 100'),
-    PhotoUrls: Yup.array(),
+    EnName: Yup.string().required('الاسم باللغة الإنجليزية هو حقل مطلوب'),
+    ArName: Yup.string().required('الاسم العربي هو حقل مطلوب'),
+    subCategoryId: Yup.string().required('الفئة الفرعية هي حقل مطلوب'),
+    EnDescription: Yup.string().required('الوصف باللغة الإنجليزية هو حقل مطلوب'),
+    ArDescription: Yup.string().required('الوصف باللغة العربية هو حقل مطلوب'),
+    Price: Yup.number().required('السعر هو حقل مطلوب'),
+    Discount: Yup.number().max(100, '100% كحد أقصى'),
   });
 
   const defaultValues = useMemo(() => {
     if (currentProduct) {
+      const images: any[] = [];
+      currentProduct?.images?.map((item) => {
+        images.push(item.url);
+      });
+      setFiles(images);
       return {
         EnName: (currentProduct.enName as string) || '',
         ArName: (currentProduct.arName as string) || '',
@@ -54,7 +59,6 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
         ArDescription: (currentProduct.arDescription as string) || '',
         Price: currentProduct.price || 0,
         Discount: currentProduct.discount || 0,
-        PhotoUrls: currentProduct.images || [],
       };
     }
   }, [currentProduct]);
@@ -81,11 +85,16 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
   }, [isEdit, currentProduct]);
 
   const onSubmit = async (values: any) => {
-    if (!currentProduct)
-    {
+    setLoadingSend(true);
+    if (files.length == 0) {
+      setLoadingSend(false);
+      alert('لم يتم ارفاق صور المنتج');
+      return;
+    }
+    if (!currentProduct) {
       const { subCategoryId, ...remaining } = values;
       try {
-        await dispatch(createProduct(subCategoryId as string, { ...remaining }));
+        await dispatch(createProduct(subCategoryId as string, { ...remaining, Images: files }));
         reset();
         setLoadingSend(false);
         navigate(PATH_DASHBOARD.products.root);
@@ -94,8 +103,9 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
       }
     } else {
       try {
-        const product:EditProductPayload = values
-        delete product?.subCategoryId
+        const product: any = values;
+        delete product?.subCategoryId;
+        delete product?.images;
         await dispatch(editProduct(id as string, product));
         reset();
         setLoadingSend(false);
@@ -104,6 +114,31 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
         console.error(error);
       }
     }
+  };
+
+  const uploadFile = async (file: File) => {
+    setLoadingSend(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    if (isEdit) {
+      const response = await axios.post('product/uploadImage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        params: {
+          product_id: id,
+        },
+      });
+      files.push(response?.data?.url);
+    } else {
+      const response = await axios.post('/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      files.push(response.data);
+    }
+    setLoadingSend(false);
   };
 
   const getSubCategories = async () => {
@@ -116,26 +151,24 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
   };
 
   useEffect(() => {
-   
-      getSubCategories();
+    getSubCategories();
   }, []);
-  const uploadImage = async (file: File) => {
-    const form = new FormData()
-    form.append('file',file)
-    try {
-      await axios.post(`/Product/uploadImage`, form, { params: {  } });
-     
-    } catch (error) {
-      console.log({ error });
-    }
-  }
-const [files,setFiles]=useState<any>([])
+  const onRemoveImage = async (index: number) => {
+    setLoadingSend(true);
+    if (isEdit)
+      await axios.post('product/deleteImage', null, {
+        params: { id: currentProduct?.images[index]?.id as string },
+      });
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles([...newFiles]);
+    setLoadingSend(false);
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Card>
-        
         <Box sx={{ p: 3 }}>
-          <UploadMultiFile files={files} onDropAccepted={(files)=>{console.log(files[0])}} />
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
             الاسم بالانجليزية:
           </Typography>
@@ -188,14 +221,7 @@ const [files,setFiles]=useState<any>([])
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
             <Stack alignItems="flex-start" spacing={1.5}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: '50%' }}>
-                <RHFTextField
-                  size="medium"
-                  name={`EnDescription`}
-                  fullWidth
-                  multiline
-                  rows={4}
-                  // sx={{ maxWidth: { md: 122 } }}
-                />
+                <RHFTextField size="medium" name={`EnDescription`} fullWidth multiline rows={4} />
               </Stack>
             </Stack>
           </Stack>
@@ -225,7 +251,7 @@ const [files,setFiles]=useState<any>([])
           </Stack>
 
           <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-            نسبة الخصم:
+            نسبة الخصم%:
           </Typography>
 
           <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
@@ -237,16 +263,25 @@ const [files,setFiles]=useState<any>([])
           </Stack>
 
           <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
+
+          <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
+            {'  صور المنتج ( الحد الاقصي ٥ صور )'}:
+          </Typography>
+          <UploadMultiFile
+            loading={loadingSend}
+            files={files}
+            showPreview={true}
+            onRemove={onRemoveImage}
+            onDropAccepted={async (newFile) => {
+              await uploadFile(newFile[0]);
+            }}
+            maxFiles={5}
+          />
         </Box>
       </Card>
 
       <Stack justifyContent="flex-end" direction="row" spacing={2} sx={{ mt: 3 }}>
-        <LoadingButton
-          size="large"
-          variant="contained"
-          loading={loadingSend && isSubmitting}
-          type="submit"
-        >
+        <LoadingButton size="large" variant="contained" loading={loadingSend} type="submit">
           {isEdit ? 'تحديث' : 'انشاء'} & ارسال
         </LoadingButton>
       </Stack>

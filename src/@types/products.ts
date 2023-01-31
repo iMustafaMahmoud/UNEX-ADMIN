@@ -58,7 +58,11 @@ export interface EditProductPayload {
   enDescription: string;
   price: number;
   discount: number;
-  images: string[];
+  images: {
+    id: string;
+    name: string;
+    url: string;
+  }[];
   subCategoryId?: string;
 }
 export interface productById {
@@ -68,7 +72,11 @@ export interface productById {
   discountedPrice: number;
   enDescription: string;
   enName: string;
-  images: string[];
+  images: {
+    id: string;
+    name: string;
+    url: string;
+  }[];
   info: Info[];
   price: number;
   subCategoryArName: string;

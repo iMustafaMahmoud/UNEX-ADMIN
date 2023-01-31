@@ -17,21 +17,25 @@ export default function MultiFilePreview({
   showPreview = false,
   files,
   onRemove,
+  onRemoveAll,
 }: UploadMultiFileProps) {
-  const hasFile = files.length > 0;
-
+  const hasFile = files?.length > 0;
+  const handleFile = (file: any) => {
+    if (typeof file === 'string')
+      return file
+    else
+      return URL.createObjectURL(file);
+  };
   return (
     <List disablePadding sx={{ ...(hasFile && { my: 3 }) }}>
       <AnimatePresence>
         {files.map((file, index) => {
           const { key, name, size, preview } = getFileData(file, index);
-
           if (showPreview) {
             return (
               <ListItem
                 key={key}
                 component={m.div}
-               
                 sx={{
                   p: 0,
                   m: 0.5,
@@ -44,12 +48,12 @@ export default function MultiFilePreview({
                   border: (theme) => `solid 1px ${theme.palette.divider}`,
                 }}
               >
-                <Image alt="preview" src={preview} ratio="1/1" />
+                <Image alt="preview" src={handleFile(file)} ratio="1/1" />
 
                 {onRemove && (
                   <IconButton
                     size="small"
-                    onClick={() => onRemove(file)}
+                    onClick={() => onRemove(index)}
                     sx={{
                       top: 6,
                       p: '2px',
@@ -93,8 +97,8 @@ export default function MultiFilePreview({
                 secondaryTypographyProps={{ variant: 'caption' }}
               />
 
-              {onRemove && (
-                <IconButton edge="end" size="small" onClick={() => onRemove(file)}>
+              {onRemoveAll && (
+                <IconButton edge="end" size="small" onClick={() => onRemoveAll(index)}>
                   <Iconify icon={'eva:close-fill'} />
                 </IconButton>
               )}

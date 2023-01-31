@@ -1,8 +1,6 @@
 import Dialog from '@mui/material/Dialog';
-import { HexColorPicker } from 'react-colorful';
-import { Box, Button, Divider, Stack, TextField, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { Info } from 'src/@types/products';
 import { UploadMultiFile } from 'src/components/upload';
 import { FormProvider, RHFTextField } from 'src/components/hook-form';
 import * as Yup from 'yup';
@@ -14,6 +12,7 @@ import axios from 'src/utils/axios';
 export interface AddBannerDialogProps {
   open: boolean;
   handleClose: () => void;
+  onSubmit: VoidFunction;
 }
 
 const AddBannerDialog = (props: AddBannerDialogProps) => {
@@ -21,11 +20,6 @@ const AddBannerDialog = (props: AddBannerDialogProps) => {
 
   const [files, setFiles] = useState<any[]>([]);
   const [loadingSend, setLoadingSend] = useState(false);
-
-  const addBanner = async () => {
-    // await handleAddColor(color);
-    // handleClose();
-  };
 
   const NewUserSchema = Yup.object().shape({
     href: Yup.string().required(),
@@ -60,6 +54,7 @@ const AddBannerDialog = (props: AddBannerDialogProps) => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      props.onSubmit();
     } catch (error) {
       console.error(error);
     }
@@ -76,14 +71,15 @@ const AddBannerDialog = (props: AddBannerDialogProps) => {
         justifyContent="center"
         alignItems={'center'}
       >
-        {/* <TextField
-          sx={{ width: '300px', marginBottom: '16px' }}
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-        /> */}
-
         <UploadMultiFile
           files={files}
+          maxFiles={1}
+          showPreview={true}
+          onRemove={(index) => {
+            const newFiles = [...files]
+            newFiles.splice(index, 1)
+            setFiles([...newFiles]);
+          }}
           onDropAccepted={(files: any[]) => {
             setFiles(files);
           }}
@@ -119,12 +115,6 @@ const AddBannerDialog = (props: AddBannerDialogProps) => {
             </Stack>
           </FormProvider>
         </Box>
-
-        {/* <Box display="flex" alignItems="center" justifyContent="center" mt={2}>
-          <Button fullWidth variant="contained" onClick={addBanner}>
-            اضافة البانر
-          </Button>
-        </Box> */}
       </Box>
     </Dialog>
   );

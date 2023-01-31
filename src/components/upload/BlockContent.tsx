@@ -1,11 +1,11 @@
 // @mui
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack, CircularProgress } from '@mui/material';
 // assets
 import { UploadIllustration } from '../../assets';
 
 // ----------------------------------------------------------------------
 
-export default function BlockContent() {
+export default function BlockContent({loading}:{loading?:boolean}) {
   return (
     <Stack
       spacing={2}
@@ -14,25 +14,33 @@ export default function BlockContent() {
       direction={{ xs: 'column', md: 'row' }}
       sx={{ width: 1, textAlign: { xs: 'center', md: 'left' } }}
     >
-      <UploadIllustration sx={{ width: 220 }} />
+      {!loading ? (
+        <>
+          <UploadIllustration sx={{ width: 220 }} />
 
-      <Box sx={{ p: 3 }}>
-        <Typography gutterBottom variant="h5">
-          Drop or Select file
-        </Typography>
+          <Box sx={{ p: 3 }}>
+            <Typography gutterBottom variant="h5">
+              إفلات أو تحديد ملف
+            </Typography>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Drop files here or click&nbsp;
-          <Typography
-            variant="body2"
-            component="span"
-            sx={{ color: 'primary.main', textDecoration: 'underline' }}
-          >
-            browse
-          </Typography>
-          &nbsp;thorough your machine
-        </Typography>
-      </Box>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              &nbsp; {`  قم بإسقاط الملفات هنا أو انقر`}{' '}
+              <Typography
+                variant="body2"
+                component="span"
+                sx={{ color: 'primary.main', textDecoration: 'underline' }}
+              >
+                تصفح
+              </Typography>
+              &nbsp;عبر جهازك
+            </Typography>
+          </Box>
+        </>
+      ) : (
+        <Stack alignItems={'center'} justifyContent={'center'}>
+          <CircularProgress />
+        </Stack>
+      )}
     </Stack>
   );
 }

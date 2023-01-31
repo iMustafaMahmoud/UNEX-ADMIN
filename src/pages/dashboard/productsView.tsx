@@ -34,6 +34,7 @@ import InfoTableRow from 'src/sections/@dashboard/products/info/InfoTableRow';
 import AddColorDialog from 'src/sections/@dashboard/products/dialogs/add-color-dialog';
 import AddEditSizeDialog from 'src/sections/@dashboard/products/dialogs/add-size-dialog';
 import { DeleteInfo, DeleteItem, UpdateInfo, UpdateItem } from 'src/redux/slices/products';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -49,13 +50,9 @@ const TABLE_HEAD = [
 
 export default function ProuductsView() {
   const { themeStretch } = useSettings();
-
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
   const { id } = useParams();
-
   const {
     dense,
     page,
@@ -73,7 +70,10 @@ export default function ProuductsView() {
   } = useTable({ defaultOrderBy: 'createDate' });
 
   const [product, setProduct] = useState<productById | null>(null);
-
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<
+    { type: 'info' | 'item'; id: string } | undefined
+  >(undefined);
   const [colorDialogOpen, setColorDialogOpen] = useState(false);
 
   const [sizeDialogOpen, setSizeDialogOpen] = useState(false);
@@ -129,6 +129,18 @@ export default function ProuductsView() {
   const handleEditColor = (infoItem: Info) => {
     setSelectedProductInfo(infoItem);
     setColorDialogOpen(true);
+  };
+  const onDeleteRow = async () => {
+    try {
+      if (selectedItem?.type == 'info') {
+        await handleDeleteProductInfo(selectedItem?.id as string);
+      } else if (selectedItem?.type == 'item') {
+        await handleDeleteProductItem(selectedItem?.id as string);
+      }
+    } catch (error) {
+      alert('SomeThing went wrong');
+    }
+    setOpen(false);
   };
 
   const handleSubmitColor = async (color: string) => {
@@ -257,7 +269,7 @@ export default function ProuductsView() {
                 </Typography>
               </Stack>
             </Box>
-            <img height={'375px'} src={product.images[0]} />
+            <img height={'375px'} src={product.images[1]?.url} />
           </Box>
         )}
 
@@ -294,7 +306,13 @@ export default function ProuductsView() {
                               row={row}
                               selected={selected.includes(String(row.id))}
                               onEditRow={() => handleEditColor(row)}
-                              onDeleteRow={() => handleDeleteProductInfo(String(row.id))}
+                              onDeleteRow={() => {
+                                setSelectedItem({
+                                  id: String(row.id),
+                                  type: 'info',
+                                });
+                                setOpen(true);
+                              }}
                               onAddSize={() => {
                                 setSelectedProductInfoId(String(row.id));
                                 setSizeDialogOpen(true);
@@ -307,7 +325,13 @@ export default function ProuductsView() {
                                 infoItem={item}
                                 selected={selected.includes(String(row.id))}
                                 onEditRow={() => handleEditProductItem(item)}
-                                onDeleteRow={() => handleDeleteProductItem(String(item.itemId))}
+                                onDeleteRow={() => {
+                                  setSelectedItem({
+                                    id: String(item.itemId),
+                                    type: 'item',
+                                  });
+                                  setOpen(true);
+                                }}
                               />
                             ))}
                           </>
@@ -349,7 +373,6 @@ export default function ProuductsView() {
         }}
         handleAddColor={handleSubmitColor}
       />
-
       <AddEditSizeDialog
         open={sizeDialogOpen}
         productItem={selectedProductItem}
@@ -361,6 +384,14 @@ export default function ProuductsView() {
         productInfoId={selectedProductInfoId}
         onSubmit={handleSubmitProductItem}
       />
+      <ConfirmationDialog
+        handleClose={() => setOpen(false)}
+        open={open}
+        submit={() => {
+          onDeleteRow();
+        }}
+      />
+      
     </Page>
   );
 }

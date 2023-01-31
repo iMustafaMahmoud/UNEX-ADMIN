@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from 'src/redux/store';
 import { SubCategories } from 'src/@types/sub-categories';
 import { deleteSubCategory, getSubCategories } from 'src/redux/slices/sub-categories';
 import SubCategoryTableRow from 'src/sections/@dashboard/categories/sub-categories/list/SubCategoriesTableRow';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,8 @@ export default function SubCategoriesList() {
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -119,7 +122,11 @@ export default function SubCategoriesList() {
   useEffect(() => {
     dispatch(getSubCategories(id as string));
   }, []);
-
+  const onDelete = () => {
+    handleDeleteRow(selectedSubCategory);
+    setModalOpen(false);
+    setSelectedSubCategory('');
+  };
   return (
     <Page title="جدول الفئات الفرعية">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -128,7 +135,7 @@ export default function SubCategoriesList() {
           links={[
             { name: 'الرئيسية', href: PATH_DASHBOARD.root },
             {
-              name: " الفئات الفرعية",
+              name: ' الفئات الفرعية',
               href: PATH_DASHBOARD.categories.subCategories(id as string),
             },
           ]}
@@ -139,7 +146,7 @@ export default function SubCategoriesList() {
               to={PATH_DASHBOARD.categories.subCategoriesAdd(id as string)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-             فئة فرعية جديدة
+              فئة فرعية جديدة
             </Button>
           }
         />
@@ -147,11 +154,9 @@ export default function SubCategoriesList() {
         <Card>
           <Divider />
 
-       
           <Scrollbar>
             {Boolean(subCategories) && (
               <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-
                 <Table size={dense ? 'small' : 'medium'}>
                   <TableHeadCustom
                     order={order}
@@ -179,7 +184,10 @@ export default function SubCategoriesList() {
                           onSelectRow={() => onSelectRow(String(row.id))}
                           onViewRow={() => handleViewRow(String(row.id))}
                           onEditRow={() => handleEditRow(String(row.id))}
-                          onDeleteRow={() => handleDeleteRow(String(row.id))}
+                          onDeleteRow={() => {
+                            setSelectedSubCategory(String(row.id))
+                            setModalOpen(true)
+                          }}
                           onViewSubCategory={() => console.log('hereee')}
                         />
                       ))}
@@ -208,6 +216,13 @@ export default function SubCategoriesList() {
             />
           </Box>
         </Card>
+        <ConfirmationDialog
+          handleClose={() => setModalOpen(false)}
+          open={modalOpen}
+          submit={() => {
+            onDelete();
+          }}
+        />
       </Container>
     </Page>
   );

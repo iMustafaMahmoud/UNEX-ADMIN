@@ -98,6 +98,10 @@ export const PATH_DASHBOARD = {
   banner: {
     root: path(ROOTS_DASHBOARD, '/banner'),
   },
+  orders: {
+    root: path(ROOTS_DASHBOARD, '/orders'),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/orders/${id}}`),
+  },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),
     list: path(ROOTS_DASHBOARD, '/invoice/list'),

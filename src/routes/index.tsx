@@ -21,6 +21,8 @@ import ProuductsList from 'src/pages/dashboard/products';
 import ProductsCreate from 'src/pages/dashboard/productsCreate';
 import ProuductsView from 'src/pages/dashboard/productsView';
 import ProductsEdit from 'src/pages/dashboard/ProductsEdit';
+import InvoiceList from 'src/pages/dashboard/InvoiceList';
+import InvoiceDetails from 'src/sections/@dashboard/invoice/details';
 
 // ----------------------------------------------------------------------
 
@@ -114,6 +116,14 @@ export default function Router() {
             { path: 'list', element: <Banner /> },
           ],
         },
+        {
+          path: 'orders',
+          children: [
+            { element: <Navigate to="/dashboard/orders/list" replace />, index: true },
+            { path: 'list', element: <InvoiceList /> },
+            { path: 'list/:id', element: <InvoiceDetails /> },
+          ],
+        },
 
         { path: 'permission-denied', element: <PermissionDenied /> },
       ],
@@ -138,6 +148,7 @@ const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
 const SocialLinks = Loadable(lazy(() => import('../pages/dashboard/Social')));
 const Banner = Loadable(lazy(() => import('../pages/dashboard/Banner')));
+const Orders = Loadable(lazy(() => import('../pages/dashboard/orders')));
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDenied = Loadable(lazy(() => import('../pages/dashboard/PermissionDenied')));

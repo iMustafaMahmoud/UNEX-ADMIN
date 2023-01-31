@@ -18,7 +18,6 @@ import axiosInstance from 'src/utils/axios';
 import { Table } from '@mui/material';
 import { TableHeadCustom } from 'src/components/table';
 import BannerTableRow from 'src/sections/banners/BannerTableRow';
-import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -30,11 +29,8 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function Banner() {
+export default function Orders() {
   const { themeStretch } = useSettings();
-  const [open, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string|undefined>(undefined);
-
   const [banners, setBanners] = useState<
     | {
         url: string;
@@ -46,30 +42,18 @@ export default function Banner() {
 
   const [bannerDialogOpen, setBannerDialogOpen] = useState(false);
 
-  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-  const getBanners = async () => {
-    const response = await axiosInstance.get('/redirections/get');
+  const getOrders = async () => {
+      const response = await axiosInstance.get('/Order/allorders');
+      console.log('getData', response);
     setBanners(response.data);
   };
   useEffect(() => {
-    getBanners();
+    getOrders();
   }, []);
   const { id } = useParams();
 
-  const onDeleteRow = async () => {
-    try {
-      const response = await axiosInstance.post('/redirections/delete', null, {
-        params: {
-          id: selectedItem,
-        },
-      });
-      setSelectedItem(undefined);
-      setOpen(false);
-      getBanners();
-    } catch (error) {}
-  };
+
 
   return (
     <Page title={'Banners'}>
@@ -96,14 +80,7 @@ export default function Banner() {
 
             <TableBody>
               {banners?.map((row) => (
-                <BannerTableRow
-                  key={row.id}
-                  row={row}
-                  onDeleteRow={() => {
-                    setSelectedItem(row.id);
-                    setOpen(true);
-                  }}
-                />
+                <BannerTableRow key={row.id} row={row} onDeleteRow={() => {}} />
               ))}
             </TableBody>
           </Table>
@@ -112,17 +89,10 @@ export default function Banner() {
       <AddBannerDialog
         open={bannerDialogOpen}
         onSubmit={() => {
-          getBanners();
+          getOrders();
           setBannerDialogOpen(false);
         }}
         handleClose={() => setBannerDialogOpen(false)}
-      />
-      <ConfirmationDialog
-        handleClose={() => setOpen(false)}
-        open={open}
-        submit={() => {
-          onDeleteRow();
-        }}
       />
     </Page>
   );

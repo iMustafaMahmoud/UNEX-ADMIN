@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import {
   Box,
   Tab,
@@ -7,7 +8,6 @@ import {
   Card,
   Table,
   Stack,
-  Button,
   Tooltip,
   Divider,
   TableBody,
@@ -33,14 +33,22 @@ import {
   TableHeadCustom,
   TableSelectedActions,
 } from '../../components/table';
-
+import axiosInstance from 'src/utils/axios';
+import { InvoiceTableRow } from 'src/sections/@dashboard/invoice/list';
+import ChangeStatusModal from 'src/sections/@dashboard/invoice/ChangeStatus';
+ enum ORDER_STATUS {
+  Confirmed = 0,
+  Processing = 1,
+  OutForDelivery = 2,
+  Delivered = 3,
+  Canceled = 4,
+}
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'invoiceNumber', label: 'العميل', align: 'left' },
+  { id: 'clientNumber', label: 'رقم العميل', align: 'left' },
+  { id: 'createDate', label: 'التاريخ', align: 'left' },
+  { id: 'price', label: 'اجمالي التكلفه', align: 'center', width: 140 },
+  { id: 'status', label: 'حالة الطلب', align: 'left' },
   { id: '' },
 ];
 
@@ -48,45 +56,41 @@ const TABLE_HEAD = [
 
 export default function InvoiceList() {
   const { themeStretch } = useSettings();
-
   const navigate = useNavigate();
+  const[selectedOrder,setSelectedOrder]=useState<string|undefined>(undefined)
+  const [modalOpen, setModalOpen] = useState(false);
 
+  const getOrders = async () => {
+    const response = await axiosInstance.get('/Order/allorders');
+    console.log('getData', response);
+    setTableData(response.data);
+  };
+  useEffect(() => {
+    getOrders();
+  }, []);
   const {
     dense,
     page,
     order,
     orderBy,
     rowsPerPage,
-    setPage,
-    //
     selected,
     setSelected,
-    onSelectRow,
     onSelectAllRows,
-    //
     onSort,
+    onSelectRow,
+    setPage,
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'createDate' });
 
   const [tableData, setTableData] = useState([]);
-
   const [filterName, setFilterName] = useState('');
-
   const [filterService, setFilterService] = useState('all');
-
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
-
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
-
   const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('all');
-
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
-  };
 
   const dataFiltered = applySortFilter({
     tableData,
@@ -97,7 +101,6 @@ export default function InvoiceList() {
     filterStartDate,
     filterEndDate,
   });
-
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterStatus) ||
@@ -107,49 +110,65 @@ export default function InvoiceList() {
 
   const denseHeight = dense ? 56 : 76;
 
-  const getLengthByStatus = (status: string) =>
+  const getLengthByStatus = (status: number) =>
     tableData.filter((item: any) => item.status === status).length;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'all', label: 'الكل', color: 'default', count: tableData.length },
+    { value: ORDER_STATUS.Confirmed, label: 'جديد', color: 'info', count: getLengthByStatus(0) },
+    {
+      value: ORDER_STATUS.Processing,
+      label: 'قيد التحضير',
+      color: 'warning',
+      count: getLengthByStatus(1),
+    },
+    {
+      value: ORDER_STATUS.OutForDelivery,
+      label: 'خرج للتوصيل',
+      color: 'warning',
+      count: getLengthByStatus(2),
+    },
+    {
+      value: ORDER_STATUS.Delivered,
+      label: 'تم التوصيل',
+      color: 'success',
+      count: getLengthByStatus(3),
+    },
+    {
+      value: ORDER_STATUS.Canceled,
+      label: 'تم الالغاء',
+      color: 'error',
+      count: getLengthByStatus(4),
+    },
   ] as const;
 
+  const changeOrderStatus =async (status: string) => {
+   try {
+     const response = await axiosInstance.post(`order/changestatus`, {
+       orderId: selectedOrder,
+       status: status,
+     });
+   } catch (error) {
+     
+   }
+    await getOrders();
+    setModalOpen(false)
+    setSelectedOrder(undefined)
+
+  }
   return (
-    <Page title="Invoice: List">
+    <Page title="الطلبات">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Invoice List"
+          heading="الطلبات"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Invoices', href: PATH_DASHBOARD.invoice.root },
-            { name: 'List' },
+            { name: 'الرئيسية', href: PATH_DASHBOARD.root },
+            { name: 'الطلبات', href: PATH_DASHBOARD.orders.root },
           ]}
-          action={
-            <Button
-              variant="contained"
-              component={RouterLink}
-              to={PATH_DASHBOARD.invoice.new}
-              startIcon={<Iconify icon={'eva:plus-fill'} />}
-            >
-              New Invoice
-            </Button>
-          }
         />
 
         <Card sx={{ mb: 5 }}>
-          <Scrollbar>
-            {/* <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
-              sx={{ py: 2 }}
-            >
-            
-            </Stack> */}
-          </Scrollbar>
+          <Scrollbar></Scrollbar>
         </Card>
 
         <Card>
@@ -206,12 +225,6 @@ export default function InvoiceList() {
                           <Iconify icon={'eva:printer-fill'} />
                         </IconButton>
                       </Tooltip>
-
-                      <Tooltip title="Delete">
-                        <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                          <Iconify icon={'eva:trash-2-outline'} />
-                        </IconButton>
-                      </Tooltip>
                     </Stack>
                   }
                 />
@@ -225,12 +238,6 @@ export default function InvoiceList() {
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row: any) => row.id)
-                    )
-                  }
                 />
 
                 <TableBody>
@@ -238,6 +245,24 @@ export default function InvoiceList() {
                     height={denseHeight}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
                   />
+                  {dataFiltered.map((item, index) => (
+                    <InvoiceTableRow
+                      key={'index'}
+                      row={item}
+                      onSelectRow={() => {
+                        onSelectRow(String(index));
+                      }}
+                      selected={false}
+                     
+                      onEditRow={() => {
+                        setSelectedOrder(item?.id as string)
+                        setModalOpen(true);
+                      }}
+                      onViewRow={() => {
+                        navigate(`${item?.id}`);
+                      }}
+                    />
+                  ))}
 
                   <TableNoData isNotFound={isNotFound} />
                 </TableBody>
@@ -257,6 +282,7 @@ export default function InvoiceList() {
             />
           </Box>
         </Card>
+        <ChangeStatusModal handleClose={() => setModalOpen(false)} open={modalOpen} submit={changeOrderStatus} />
       </Container>
     </Page>
   );
