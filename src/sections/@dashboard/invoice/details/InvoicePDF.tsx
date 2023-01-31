@@ -177,7 +177,7 @@ export default function InvoicePDF({ invoice }: Props) {
           </View>
           <View style={[styles.col4, styles.alignRight]}>
             <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text>support@abcapp.com</Text>
+            <Text>unex.city.active@gmail.com</Text>
           </View>
         </View>
       </Page>
