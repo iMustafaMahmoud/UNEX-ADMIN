@@ -213,8 +213,8 @@ export default function UserList() {
         </Card>
       </Container>
       <UserModal
-        afterSubmit={() => {
-          fetchUsers();
+        afterSubmit={async() => {
+         await fetchUsers();
           setModalOpen(false);
         }}
         isEdit={currentUser ? true : false}
