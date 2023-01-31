@@ -6,22 +6,15 @@ import {
   Box,
   Card,
   Table,
-  Stack,
-  Switch,
   Button,
-  Tooltip,
   Divider,
   TableBody,
   Container,
-  IconButton,
   TableContainer,
   TablePagination,
-  FormControlLabel,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
-// hooks
-import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 // components
@@ -34,6 +27,7 @@ import { useDispatch, useSelector } from 'src/redux/store';
 import { deleteCategory, getCategories } from 'src/redux/slices/categories';
 import CategoryTableRow from 'src/sections/@dashboard/categories/list/CategoryTableRow';
 import { Categories } from 'src/@types/categories';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -76,9 +70,10 @@ export default function CategoriesList() {
   } = useTable({ defaultOrderBy: 'createDate' });
 
   const [filterName, setFilterName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [filterService, setFilterService] = useState('all');
-
 
   const handleDeleteRow = async (id: string) => {
     await dispatch(deleteCategory(id));
@@ -109,7 +104,11 @@ export default function CategoriesList() {
   });
 
   const denseHeight = dense ? 56 : 76;
-
+  const onDelete = () => {
+    handleDeleteRow(selectedCategory);
+    setModalOpen(false)
+    setSelectedCategory('')
+  };
   useEffect(() => {
     dispatch(getCategories());
   }, []);
@@ -140,8 +139,6 @@ export default function CategoriesList() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-            
-
               <Table size={dense ? 'small' : 'medium'}>
                 <TableHeadCustom
                   order={order}
@@ -159,20 +156,24 @@ export default function CategoriesList() {
                 />
 
                 <TableBody>
-                  {categories
-                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <CategoryTableRow
-                        key={row.id}
-                        row={row}
-                        selected={selected.includes(String(row.id))}
-                        onSelectRow={() => onSelectRow(String(row.id))}
-                        onViewRow={() => handleViewRow(String(row.id))}
-                        onEditRow={() => handleEditRow(String(row.id))}
-                        onDeleteRow={() => handleDeleteRow(String(row.id))}
-                        onViewSubCategory={() => handleViewSubCategories(String(row.id))}
-                      />
-                    ))}
+                  {categories &&
+                    categories
+                      ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => (
+                        <CategoryTableRow
+                          key={row.id}
+                          row={row}
+                          selected={selected.includes(String(row.id))}
+                          onSelectRow={() => onSelectRow(String(row.id))}
+                          onViewRow={() => handleViewRow(String(row.id))}
+                          onEditRow={() => handleEditRow(String(row.id))}
+                          onDeleteRow={() => {
+                            setSelectedCategory(String(row.id));
+                            setModalOpen(true);
+                          }}
+                          onViewSubCategory={() => handleViewSubCategories(String(row.id))}
+                        />
+                      ))}
 
                   <TableEmptyRows
                     height={denseHeight}
@@ -189,9 +190,7 @@ export default function CategoriesList() {
               component="div"
               count={categories.length}
               rowsPerPage={rowsPerPage}
-              labelDisplayedRows={(info) =>
-                ` ${info.from + '/' + info.to + ' من ' + info.count}`
-              }
+              labelDisplayedRows={(info) => ` ${info.from + '/' + info.to + ' من ' + info.count}`}
               labelRowsPerPage="صفوف في الصفحة:"
               page={page}
               onPageChange={onChangePage}
@@ -199,6 +198,13 @@ export default function CategoriesList() {
             />
           </Box>
         </Card>
+        <ConfirmationDialog
+          handleClose={() => setModalOpen(false)}
+          open={modalOpen}
+          submit={() => {
+            onDelete();
+          }}
+        />
       </Container>
     </Page>
   );

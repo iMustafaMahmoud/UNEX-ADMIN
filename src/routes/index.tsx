@@ -21,6 +21,8 @@ import ProuductsList from 'src/pages/dashboard/products';
 import ProductsCreate from 'src/pages/dashboard/productsCreate';
 import ProuductsView from 'src/pages/dashboard/productsView';
 import ProductsEdit from 'src/pages/dashboard/ProductsEdit';
+import InvoiceList from 'src/pages/dashboard/InvoiceList';
+import InvoiceDetails from 'src/sections/@dashboard/invoice/details';
 
 // ----------------------------------------------------------------------
 
@@ -118,7 +120,8 @@ export default function Router() {
           path: 'orders',
           children: [
             { element: <Navigate to="/dashboard/orders/list" replace />, index: true },
-            { path: 'list', element: <Orders /> },
+            { path: 'list', element: <InvoiceList /> },
+            { path: 'list/:id', element: <InvoiceDetails /> },
           ],
         },
 

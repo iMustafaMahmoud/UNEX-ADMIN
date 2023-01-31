@@ -43,13 +43,13 @@ export default function Orders() {
   const [bannerDialogOpen, setBannerDialogOpen] = useState(false);
 
 
-  const getBanners = async () => {
+  const getOrders = async () => {
       const response = await axiosInstance.get('/Order/allorders');
       console.log('getData', response);
     setBanners(response.data);
   };
   useEffect(() => {
-    getBanners();
+    getOrders();
   }, []);
   const { id } = useParams();
 
@@ -89,7 +89,7 @@ export default function Orders() {
       <AddBannerDialog
         open={bannerDialogOpen}
         onSubmit={() => {
-          getBanners();
+          getOrders();
           setBannerDialogOpen(false);
         }}
         handleClose={() => setBannerDialogOpen(false)}

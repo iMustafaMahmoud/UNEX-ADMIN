@@ -100,6 +100,7 @@ export const PATH_DASHBOARD = {
   },
   orders: {
     root: path(ROOTS_DASHBOARD, '/orders'),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/orders/${id}}`),
   },
   invoice: {
     root: path(ROOTS_DASHBOARD, '/invoice'),
