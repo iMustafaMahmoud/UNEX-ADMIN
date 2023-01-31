@@ -18,6 +18,7 @@ import axiosInstance from 'src/utils/axios';
 import { Table } from '@mui/material';
 import { TableHeadCustom } from 'src/components/table';
 import BannerTableRow from 'src/sections/banners/BannerTableRow';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +32,9 @@ const TABLE_HEAD = [
 
 export default function Banner() {
   const { themeStretch } = useSettings();
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string|undefined>(undefined);
+
   const [banners, setBanners] = useState<
     | {
         url: string;
@@ -47,20 +51,22 @@ export default function Banner() {
   const navigate = useNavigate();
   const getBanners = async () => {
     const response = await axiosInstance.get('/redirections/get');
-    setBanners(response.data)
+    setBanners(response.data);
   };
   useEffect(() => {
     getBanners();
   }, []);
   const { id } = useParams();
 
-  const onDeleteRow = async (bannerID: string) => {
+  const onDeleteRow = async () => {
     try {
-      const response = await axiosInstance.post('/redirections/delete',null, {
+      const response = await axiosInstance.post('/redirections/delete', null, {
         params: {
-          id: bannerID,
+          id: selectedItem,
         },
       });
+      setSelectedItem(undefined);
+      setOpen(false);
       getBanners();
     } catch (error) {}
   };
@@ -90,18 +96,34 @@ export default function Banner() {
 
             <TableBody>
               {banners?.map((row) => (
-                <BannerTableRow key={row.id} row={row} onDeleteRow={() => onDeleteRow(row.id)} />
+                <BannerTableRow
+                  key={row.id}
+                  row={row}
+                  onDeleteRow={() => {
+                    setSelectedItem(row.id);
+                    setOpen(true);
+                  }}
+                />
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
-      <AddBannerDialog open={bannerDialogOpen}
+      <AddBannerDialog
+        open={bannerDialogOpen}
         onSubmit={() => {
           getBanners();
-          setBannerDialogOpen(false)
-          }}
-        handleClose={() => setBannerDialogOpen(false)} />
+          setBannerDialogOpen(false);
+        }}
+        handleClose={() => setBannerDialogOpen(false)}
+      />
+      <ConfirmationDialog
+        handleClose={() => setOpen(false)}
+        open={open}
+        submit={() => {
+          onDeleteRow();
+        }}
+      />
     </Page>
   );
 }
