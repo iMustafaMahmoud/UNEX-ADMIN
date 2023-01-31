@@ -31,7 +31,7 @@ export default function InvoicePDF({ invoice }: Props) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.gridContainer, styles.mb40]}>
-          <Image source="/logo/logo_full.jpg" style={{ height: 32 }} />
+          <Image source="/logo/unexPdf.png" style={{ height: 32 }} />
           <View style={{ alignItems: 'flex-end', flexDirection: 'column' }}>
             <Text style={styles.h3}>{status}</Text>
             <Text> {`INV-${invoiceNumber}`} </Text>
@@ -93,7 +93,7 @@ export default function InvoicePDF({ invoice }: Props) {
           </View>
 
           <View style={styles.tableBody}>
-            {items.map((item:any, index:any) => (
+            {items.map((item: any, index: any) => (
               <View style={styles.tableRow} key={item.id}>
                 <View style={styles.tableCell_1}>
                   <Text>{index + 1}</Text>

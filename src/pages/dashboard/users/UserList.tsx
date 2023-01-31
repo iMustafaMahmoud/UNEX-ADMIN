@@ -34,6 +34,7 @@ import {
 import { UserTableToolbar, UserTableRow } from '../../../sections/@dashboard/user/list';
 import { UserModal } from './UserModal';
 import axiosInstance from 'src/utils/axios';
+import ConfirmationDialog from 'src/sections/@dashboard/deleteDialog';
 
 // ----------------------------------------------------------------------
 
@@ -64,13 +65,12 @@ export default function UserList() {
   } = useTable();
 
   const { themeStretch } = useSettings();
-
   const [tableData, setTableData] = useState<{ user: User[] }[]>([]);
-
   const [filterName, setFilterName] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | undefined>();
-
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<string|undefined>(undefined);
   useEffect(() => {
     fetchUsers().catch(console.error);
   }, []);
@@ -84,10 +84,19 @@ export default function UserList() {
     setPage(0);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData?.filter((row) => row.user[0].id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
+  const handleDeleteRow =async () => {
+    try {
+      await axiosInstance.post('administration/delete', null, {
+        params: {
+          userId:selectedUser
+        },
+      });
+      await fetchUsers()
+    } catch (error) {
+      
+    }
+    setOpen(false)
+    setCurrentUser(undefined)
   };
 
   const handleEditRow = (user: User) => {
@@ -169,7 +178,10 @@ export default function UserList() {
                           row={row.user[0]}
                           selected={selected.includes(row.user[0].id)}
                           onSelectRow={() => onSelectRow(row.user[0].id)}
-                          onDeleteRow={() => handleDeleteRow(row.user[0].id)}
+                          onDeleteRow={() => {
+                            setSelectedUser(row.user[0].id as string);
+                            setOpen(true)
+                          }}
                           onEditRow={() => handleEditRow(row.user[0])}
                         />
                       ))}
@@ -209,6 +221,13 @@ export default function UserList() {
         currentUser={currentUser}
         open={modalOpen}
         handleClose={() => setModalOpen(false)}
+      />
+      <ConfirmationDialog
+        handleClose={() => setOpen(false)}
+        open={open}
+        submit={() => {
+          handleDeleteRow();
+        }}
       />
     </Page>
   );

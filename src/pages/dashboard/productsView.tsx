@@ -50,13 +50,9 @@ const TABLE_HEAD = [
 
 export default function ProuductsView() {
   const { themeStretch } = useSettings();
-
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
   const { id } = useParams();
-
   const {
     dense,
     page,
@@ -395,7 +391,7 @@ export default function ProuductsView() {
           onDeleteRow();
         }}
       />
-      ;
+      
     </Page>
   );
 }
