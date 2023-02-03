@@ -62,7 +62,6 @@ export default function InvoiceList() {
 
   const getOrders = async () => {
     const response = await axiosInstance.get('/Order/allorders');
-    console.log('getData', response);
     setTableData(response.data);
   };
   useEffect(() => {
@@ -144,9 +143,11 @@ export default function InvoiceList() {
 
   const changeOrderStatus =async (status: string) => {
    try {
-     const response = await axiosInstance.post(`order/changestatus`, {
-       orderId: selectedOrder,
-       status: status,
+     const response = await axiosInstance.post(`order/changestatus`, null, {
+       params: {
+         orderId: selectedOrder,
+         status: status,
+       },
      });
    } catch (error) {
      
@@ -259,7 +260,8 @@ export default function InvoiceList() {
                         setModalOpen(true);
                       }}
                       onViewRow={() => {
-                        navigate(`${item?.id}`);
+                      localStorage.setItem('orderDetails',JSON.stringify(item))
+                        navigate(`${PATH_DASHBOARD.orders.view(item?.id)}`);
                       }}
                     />
                   ))}

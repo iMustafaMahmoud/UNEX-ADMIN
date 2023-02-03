@@ -11,12 +11,8 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-// hooks
 import useToggle from '../../../../hooks/useToggle';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
-// @types
-// components
+
 //
 import InvoicePDF from './InvoicePDF';
 import Iconify from 'src/components/shared/Iconify';
@@ -28,13 +24,7 @@ type Props = {
 };
 
 export default function InvoiceToolbar({ invoice }: Props) {
-  const navigate = useNavigate();
-
   const { toggle: open, onOpen, onClose } = useToggle();
-
-  const handleEdit = () => {
-    navigate(PATH_DASHBOARD.invoice.edit(invoice.id));
-  };
 
   return (
     <>
@@ -46,12 +36,6 @@ export default function InvoiceToolbar({ invoice }: Props) {
         sx={{ mb: 5 }}
       >
         <Stack direction="row" spacing={1}>
-          <Tooltip title="Edit">
-            <IconButton onClick={handleEdit}>
-              <Iconify icon={'eva:edit-fill'} />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="View">
             <IconButton onClick={onOpen}>
               <Iconify icon={'eva:eye-fill'} />
@@ -60,7 +44,7 @@ export default function InvoiceToolbar({ invoice }: Props) {
 
           <PDFDownloadLink
             document={<InvoicePDF invoice={invoice} />}
-            fileName={invoice.invoiceNumber}
+            fileName={invoice?.userName}
             style={{ textDecoration: 'none' }}
           >
             {({ loading }) => (
@@ -75,34 +59,7 @@ export default function InvoiceToolbar({ invoice }: Props) {
               </Tooltip>
             )}
           </PDFDownloadLink>
-
-          <Tooltip title="Print">
-            <IconButton>
-              <Iconify icon={'eva:printer-fill'} />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Send">
-            <IconButton>
-              <Iconify icon={'ic:round-send'} />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Share">
-            <IconButton>
-              <Iconify icon={'eva:share-fill'} />
-            </IconButton>
-          </Tooltip>
         </Stack>
-
-        <Button
-          color="inherit"
-          variant="outlined"
-          startIcon={<Iconify icon={'eva:checkmark-fill'} />}
-          sx={{ alignSelf: 'flex-end' }}
-        >
-          Mark as Paid
-        </Button>
       </Stack>
 
       <Dialog fullScreen open={open}>

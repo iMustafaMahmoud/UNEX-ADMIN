@@ -45,16 +45,13 @@ export default function Orders() {
 
   const getOrders = async () => {
       const response = await axiosInstance.get('/Order/allorders');
-      console.log('getData', response);
     setBanners(response.data);
   };
   useEffect(() => {
     getOrders();
   }, []);
   const { id } = useParams();
-
-
-
+  
   return (
     <Page title={'Banners'}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
