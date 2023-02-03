@@ -49,10 +49,22 @@ export default function InvoiceTableRow({
     setOpenMenuActions(null);
   };
 
+  const getStatus = (status:number) => {
+    if (status === ORDER_STATUS.Delivered && 'success')
+      return 'تم التوصيل'
+    if (status == ORDER_STATUS.OutForDelivery)
+      return 'خرج للتوصيل'
+    if (status == ORDER_STATUS.Processing)
+      return 'قيد التحضير'
+    if (status == ORDER_STATUS.Canceled)
+      return 'تم الالغاء'
+    else
+      return 'جديد'
+     
+  };
+  
   return (
     <TableRow hover selected={selected}>
-   
-
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt={email} color={createAvatar(email).color} sx={{ mr: 2 }}>
           {createAvatar(email).name}
@@ -90,7 +102,7 @@ export default function InvoiceTableRow({
           }
           sx={{ textTransform: 'capitalize' }}
         >
-          {status}
+          {getStatus(status)}
         </Label>
       </TableCell>
 
@@ -101,8 +113,6 @@ export default function InvoiceTableRow({
           onClose={handleCloseMenu}
           actions={
             <>
-             
-
               <MenuItem
                 onClick={() => {
                   onViewRow();

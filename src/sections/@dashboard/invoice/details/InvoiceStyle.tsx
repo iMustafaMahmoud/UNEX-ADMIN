@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   body1: { fontSize: 10 },
   subtitle2: { fontSize: 9, fontWeight: 700 },
   alignRight: { textAlign: 'right' },
+  alignLeft: { textAlign: 'left' },
   page: {
     padding: '40px 24px 0 24px',
     fontSize: 9,
@@ -56,8 +57,9 @@ const styles = StyleSheet.create({
   },
   noBorder: { paddingTop: 8, paddingBottom: 0, borderBottomWidth: 0 },
   tableCell_1: { width: '5%' },
-  tableCell_2: { width: '50%', paddingRight: 16 },
+  tableCell_2: { width: '35%', paddingRight: 16 },
   tableCell_3: { width: '15%' },
+  tableCell_4: { width: '20%' },
 });
 
 export default styles;

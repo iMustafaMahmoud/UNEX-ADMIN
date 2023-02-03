@@ -23,26 +23,33 @@ const ICONS = {
   analytics: getIcon('ic_analytics'),
   dashboard: getIcon('ic_dashboard'),
   menuItem: getIcon('ic_menu_item'),
+  delivery: getIcon('carbon:delivery'),
+  
 };
 
 const navConfig = [
-    {
+  {
     subheader: 'management',
     items: [
       {
         title: 'المستخدمين',
         path: PATH_DASHBOARD.user.list,
-        icon: ICONS.dashboard,
+        icon: ICONS.user,
       },
       {
         title: 'الطلبات',
         path: PATH_DASHBOARD.orders.root,
-        icon: ICONS.cart,
+        icon: ICONS.invoice,
       },
       {
         title: 'الفئات',
         path: PATH_DASHBOARD.categories.root,
         icon: ICONS.menuItem,
+      },
+      {
+        title: 'رسوم التوصيل',
+        path: PATH_DASHBOARD.delivery.root,
+        icon: ICONS.cart,
       },
       {
         title: 'المنتجات',
