@@ -45,9 +45,7 @@ export default function DeliveryFees() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
   const getFees = async () => {
     const response = await axiosInstance.get('/order/getCities');
     setFees(response.data);
@@ -85,7 +83,7 @@ export default function DeliveryFees() {
               onClick={() => setDialogOpen(true)}
               startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              اضف بانر جديد
+              اضف محافظة جديد
             </Button>
           }
         />
