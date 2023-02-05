@@ -1,11 +1,10 @@
 import axios from 'axios';
-import useAuth from 'src/hooks/useAuth';
 // config
 
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({
-  baseURL: 'https://imustafaaaa-001-site1.btempurl.com/api/',
+  baseURL: 'http://imustafaaaa-001-site1.btempurl.com/api/',
   headers: {
     'Accept-Language': 'ar',
   },
