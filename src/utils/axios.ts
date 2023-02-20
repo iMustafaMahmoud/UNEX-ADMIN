@@ -5,7 +5,7 @@ import useAuth from 'src/hooks/useAuth';
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({
-  baseURL: 'https://imustafaaaa-001-site1.btempurl.com/api/',
+  baseURL: 'https://unexcityactive-001-site1.etempurl.com/',
   headers: {
     'Accept-Language': 'ar',
   },
