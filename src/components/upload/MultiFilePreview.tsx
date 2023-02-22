@@ -21,10 +21,10 @@ export default function MultiFilePreview({
 }: UploadMultiFileProps) {
   const hasFile = files?.length > 0;
   const handleFile = (file: any) => {
-    if (typeof file === 'string')
-      return file
-    else
-      return URL.createObjectURL(file);
+    if (file?.url) return file?.url;
+
+    if (typeof file === 'string') return file;
+    else return URL.createObjectURL(file);
   };
   return (
     <List disablePadding sx={{ ...(hasFile && { my: 3 }) }}>

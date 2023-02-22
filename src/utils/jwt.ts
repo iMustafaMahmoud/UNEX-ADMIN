@@ -29,10 +29,7 @@ const handleTokenExpired = (exp: number) => {
   clearTimeout(expiredTimer);
 
   expiredTimer = setTimeout(() => {
-    alert('Token expired');
-
     localStorage.removeItem('accessToken');
-
     window.location.href = PATH_AUTH.login;
   }, timeLeft);
 };
