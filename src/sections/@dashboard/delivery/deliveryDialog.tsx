@@ -30,13 +30,16 @@ const AddDeliveryDialog = (props: AddDeliveryDialogProps) => {
   const [loadingSend, setLoadingSend] = useState(false);
 
   const NewUserSchema = Yup.object().shape({
-    City: Yup.string().required(),
+    arCity: Yup.string().required(),
+    enCity: Yup.string().required(),
     DeliveryFees: Yup.string().required(),
   });
 
+
   const defaultValues = useMemo(
     () => ({
-      City: '',
+      arCity: '',
+      enCity:'',
       DeliveryFees: '',
     }),
     []
@@ -56,7 +59,6 @@ const AddDeliveryDialog = (props: AddDeliveryDialogProps) => {
   } = methods;
 const values=watch()
   const onSubmit = async (values: any) => {
-   
     try {
       await axios.post('/order/addDeliveryfees', values);
       props.onSubmit();
@@ -69,7 +71,6 @@ const values=watch()
     <Dialog onClose={handleClose} open={open}>
       <Box
         width="500px"
-        // height="400px"
         style={{ padding: '16px' }}
         display="flex"
         flexDirection="column"
@@ -79,16 +80,13 @@ const values=watch()
         <Box width="100%">
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
-              المحافظة
+              {`المحافظة بالعربية`}
             </Typography>
-            <StyledRegionSelect
-              id="City"
-              name="City"
-              country={'Egypt'}
-              defaultOptionLabel={'Cairo'}
-              value={values.City}
-              onChange={(value) => setValue('City', value)}
-            />
+            <RHFTextField type={'text'} size="medium" id="arCity" name={`arCity`} fullWidth />
+            <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
+              {`المحافظة بالانجليزية`}
+            </Typography>
+            <RHFTextField type={'text'} size="medium" id="enCity" name={`enCity`} fullWidth />
 
             <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3, mt: 2 }}>
               الرسوم
