@@ -121,7 +121,8 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
     const formData = new FormData();
     formData.append('file', file);
     try {
-      if (isEdit) {
+      if (isEdit)
+      {
         const response = await axios.post('product/uploadImage', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -137,9 +138,13 @@ export default function ProductssNewEditForm({ isEdit, currentProduct }: Props) 
             'Content-Type': 'multipart/form-data',
           },
         });
-        files.push(response.data);
+        console.log("eresponse", response?.data)
+        
+        files.push(response?.data?.url);
       }
-    } catch (error) {}
+    } catch (error) {
+      alert(error);
+    }
     setLoadingSend(false);
   };
 

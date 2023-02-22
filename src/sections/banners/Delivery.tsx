@@ -7,11 +7,13 @@ import Iconify from 'src/components/shared/Iconify';
 
 // ----------------------------------------------------------------------
 
+
 type Props = {
   row: {
-    DeliveryFees: string;
-    City: string;
-    id?: string;
+    arCity: string;
+    enCity: string;
+    deliveryFees: string;
+    id: string;
   };
   onDeleteRow: VoidFunction;
 };
@@ -22,7 +24,7 @@ export default function DeliveryTableRow({
 }: Props) {
   const theme = useTheme();
 
-  const { City, DeliveryFees, id } = row;
+  const { arCity, enCity, deliveryFees, id } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -36,10 +38,13 @@ export default function DeliveryTableRow({
 
   return (
     <TableRow hover>
-      <TableCell sx={{ width: '50% !important' }} align="left">
-        {City}
+      <TableCell align="left">
+        {arCity}
       </TableCell>
-      <TableCell  align="left">{DeliveryFees}</TableCell>
+      <TableCell align="left">
+        {enCity}
+      </TableCell>
+      <TableCell align="left">{deliveryFees}</TableCell>
       <TableCell align="right">
         <TableMoreMenu
           open={openMenu}
